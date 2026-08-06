@@ -4,9 +4,7 @@
 
 🌐 [Visit Blog](https://d0hy30n.github.io)
 
-## About 📝
-
-정보보안 공부 기록을 중심으로 컨퍼런스 후기, 수상 소감과 가끔의 일상을 남깁니다.
+## Built With 🛠️
 
 - Framework: [Astro](https://astro.build/)
 - Theme: [Fuwari](https://github.com/saicaca/fuwari)
