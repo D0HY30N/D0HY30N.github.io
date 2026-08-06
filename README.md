@@ -1,12 +1,21 @@
-# D0HY30N's Blog
+# D0HY30N's Blog 🐈
 
-공부한 내용과 프로젝트 경험을 기록하는 개인 기술 블로그입니다.
+> A personal blog for security study notes and occasional reflections.
 
-[Visit Blog](https://d0hy30n.github.io)
+🌐 [Visit Blog](https://d0hy30n.github.io)
 
-## Credits
+## About 📝
 
-이 블로그는 [Astro](https://astro.build/)와 [saicaca](https://github.com/saicaca)의 오픈 소스 테마 [Fuwari](https://github.com/saicaca/fuwari)를 기반으로 제작했습니다.
+정보보안 공부 기록을 중심으로 컨퍼런스 후기, 수상 소감과 가끔의 일상을 남깁니다.
+
+- Framework: [Astro](https://astro.build/)
+- Theme: [Fuwari](https://github.com/saicaca/fuwari)
+- Comments: [giscus](https://giscus.app/)
+- Hosting: GitHub Pages
+
+## Credits ✨
+
+이 블로그는 [saicaca](https://github.com/saicaca)의 오픈 소스 테마 [Fuwari](https://github.com/saicaca/fuwari)를 기반으로 제작했습니다.
 
 좋은 테마를 공개해 주신 원작자와 기여자분들께 감사드립니다.
 
