@@ -42,7 +42,7 @@ const jsonLd = {
 	datePublished: formatDateToYYYYMMDD(entry.data.published),
 	inLanguage: entry.data.lang
 		? entry.data.lang.replace("_", "-")
-		: siteConfig.lang.replace("_", "-"),
+		: siteConfig.contentLang.replace("_", "-"),
 	// TODO include cover image here
 };
 ---

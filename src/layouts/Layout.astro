@@ -57,9 +57,8 @@ if (title) {
 const favicons: Favicon[] =
 	siteConfig.favicon.length > 0 ? siteConfig.favicon : defaultFavicons;
 
-// const siteLang = siteConfig.lang.replace('_', '-')
 if (!lang) {
-	lang = `${siteConfig.lang}`;
+	lang = siteConfig.contentLang;
 }
 const siteLang = lang.replace("_", "-");
 const ogImageUrl = new URL(defaultOgImage.src, Astro.site ?? Astro.url.origin).href;
