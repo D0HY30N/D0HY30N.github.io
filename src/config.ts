@@ -10,7 +10,7 @@ import { LinkPreset } from "./types/config";
 export const siteConfig: SiteConfig = {
 	title: "D0HY30N's Blog",
 	subtitle: "",
-	lang: "en", // Language code, e.g. 'en', 'zh_CN', 'ja', etc.
+	lang: "ko", // Language code, e.g. 'en', 'zh_CN', 'ja', etc.
 	themeColor: {
 		hue: 300, // Default hue for the theme color, from 0 to 360. e.g. red: 0, teal: 200, cyan: 250, pink: 345
 		darkHue: 285, // A cooler violet that matches the dark banner
@@ -57,7 +57,7 @@ export const navBarConfig: NavBarConfig = {
 export const profileConfig: ProfileConfig = {
 	avatar: "assets/images/profile-avatar.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "D0HY30N",
-	bio: "미래의 나를 위한 메모장",
+	bio: "D0HY30N's Study Log",
 	links: [
 		{
 			name: "GitHub",

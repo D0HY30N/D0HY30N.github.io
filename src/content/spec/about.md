@@ -1,9 +1,17 @@
 # About
-This is the demo site for [Fuwari](https://github.com/saicaca/fuwari).
 
-::github{repo="saicaca/fuwari"}
+안녕하세요, D0HY30N입니다.
 
-> ### Sources of images used in this site
-> - [Unsplash](https://unsplash.com/)
-> - [星と少女](https://www.pixiv.net/artworks/108916539) by [Stella](https://www.pixiv.net/users/93273965)
-> - [Rabbit - v1.4 Showcase](https://civitai.com/posts/586908) by [Rabbit_YourMajesty](https://civitai.com/user/Rabbit_YourMajesty)
+공부하면서 알게 된 내용과 시행착오를 기록합니다.
+
+나중에 다시 꺼내 볼 수 있는, 미래의 나를 위한 메모장을 만드는 중입니다.
+
+## 관심 분야
+
+- 정보보안
+- Web
+- Mobile
+
+## Contact
+
+- [GitHub](https://github.com/D0HY30N)
