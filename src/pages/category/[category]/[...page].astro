@@ -1,0 +1,67 @@
+---
+import type { GetStaticPaths } from "astro";
+import Pagination from "@components/control/Pagination.astro";
+import PostPage from "@components/PostPage.astro";
+import { PAGE_SIZE } from "@constants/constants";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { getSortedPosts } from "@utils/content-utils";
+import { getCategoryKey, getCategoryPath, getCategorySlug, UNCATEGORIZED_CATEGORY_SLUG } from "@utils/url-utils";
+
+export const getStaticPaths = (async ({ paginate }) => {
+	const posts = await getSortedPosts();
+	const categories = new Map<string, string[]>();
+	for (const post of posts) {
+		const path = getCategoryPath(post.data.category);
+		if (path.length > 0) categories.set(getCategoryKey(path), path);
+	}
+	const categoryKeysBySlug = new Map<string, string>();
+	for (const [categoryKey, path] of categories) {
+		const slug = getCategorySlug(path);
+		const existingKey = categoryKeysBySlug.get(slug);
+		if (existingKey && existingKey !== categoryKey) {
+			throw new Error(
+				`Category name "${path.at(-1)}" is duplicated across groups. Subcategory names must be unique.`,
+			);
+		}
+		categoryKeysBySlug.set(slug, categoryKey);
+	}
+
+	const categoryPages = Array.from(categories, ([category, path]) => ({ category, path })).flatMap(({ category, path }) =>
+		paginate(
+			posts.filter((post) => getCategoryKey(post.data.category) === category),
+			{
+				pageSize: PAGE_SIZE,
+				params: { category: getCategorySlug(path) },
+				props: { category: path.join(" / ") },
+			},
+		),
+	);
+
+	const uncategorizedPosts = posts.filter(
+		(post) => getCategoryPath(post.data.category).length === 0,
+	);
+	const uncategorizedPages = uncategorizedPosts.length
+		? paginate(uncategorizedPosts, {
+				pageSize: PAGE_SIZE,
+				params: { category: UNCATEGORIZED_CATEGORY_SLUG },
+				props: { category: i18n(I18nKey.uncategorized) },
+			})
+		: [];
+
+	return [...categoryPages, ...uncategorizedPages];
+}) satisfies GetStaticPaths;
+
+const { page, category } = Astro.props;
+const len = page.data.length;
+---
+
+<MainGridLayout title={category}>
+	<PostPage page={page}></PostPage>
+	<Pagination
+		class="mx-auto onload-animation"
+		page={page}
+		style={`animation-delay: calc(var(--content-delay) + ${len * 50}ms)`}
+	></Pagination>
+</MainGridLayout>
