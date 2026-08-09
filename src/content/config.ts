@@ -10,7 +10,14 @@ const postsCollection = defineCollection({
 		image: z.string().optional().default(""),
 		tags: z.array(z.string()).optional().default([]),
 		category: z
-			.union([z.string(), z.array(z.string()).min(1).max(2)])
+			.union([
+				z.string(),
+				z.array(z.string()).min(1).max(2),
+				z.object({
+					parent: z.string().optional().default(""),
+					child: z.string().optional().default(""),
+				}),
+			])
 			.optional()
 			.nullable()
 			.default(""),

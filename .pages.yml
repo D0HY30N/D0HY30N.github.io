@@ -1,0 +1,189 @@
+media:
+  - name: post_images
+    label: 글 이미지
+    input: public/images/posts
+    output: /images/posts
+    rename: safe
+    categories: [image]
+    extensions: [png, jpg, jpeg, webp, gif]
+    commit:
+      templates:
+        create: "media: add {filename}"
+        update: "media: update {filename}"
+        delete: "media: remove {filename}"
+        rename: "media: rename {oldFilename} to {newFilename}"
+
+  - name: page_images
+    label: 페이지 이미지
+    input: public/images/pages
+    output: /images/pages
+    rename: safe
+    categories: [image]
+    extensions: [png, jpg, jpeg, webp, gif]
+    commit:
+      templates:
+        create: "media: add {filename}"
+        update: "media: update {filename}"
+        delete: "media: remove {filename}"
+        rename: "media: rename {oldFilename} to {newFilename}"
+
+content:
+  - name: blog
+    label: 블로그 관리
+    type: group
+    items:
+      - name: posts
+        label: 블로그 글
+        type: collection
+        path: src/content/posts
+        format: yaml-frontmatter
+        subfolders: false
+        filename:
+          template: "{year}-{month}-{day}-{primary}.md"
+          field: create
+        view:
+          fields: [title, published, draft, category.parent, category.child]
+          primary: title
+          sort: [published, updated, title]
+          search: [title, description, tags, category.parent, category.child]
+          default:
+            sort: published
+            order: desc
+        fields:
+          - name: title
+            label: 제목
+            type: string
+            required: true
+            options:
+              maxlength: 120
+
+          - name: published
+            label: 작성일
+            type: date
+            required: true
+            options:
+              format: yyyy-MM-dd
+
+          - name: updated
+            label: 수정일
+            type: date
+            required: false
+            default: ""
+            description: 내용을 크게 수정한 날만 선택하세요.
+            options:
+              format: yyyy-MM-dd
+
+          - name: description
+            label: 글 요약
+            type: text
+            required: false
+            description: 글 목록과 검색 결과에 표시되는 짧은 설명입니다.
+            options:
+              maxlength: 240
+
+          - name: image
+            label: 표지 이미지
+            type: image
+            required: false
+            description: 글 카드와 본문 상단에 표시할 대표 이미지입니다.
+            options:
+              media: post_images
+              categories: [image]
+              extensions: [png, jpg, jpeg, webp, gif]
+              rename: safe
+
+          - name: tags
+            label: 태그
+            type: string
+            required: false
+            list:
+              max: 20
+            description: 검색에 사용할 키워드를 하나씩 추가하세요.
+
+          - name: category
+            label: 카테고리
+            type: object
+            required: false
+            description: 대카테고리만 사용해도 되고, 필요할 때 소카테고리를 추가할 수 있습니다.
+            fields:
+              - name: parent
+                label: 대카테고리
+                type: string
+                required: true
+                options:
+                  maxlength: 40
+              - name: child
+                label: 소카테고리
+                type: string
+                required: false
+                description: 선택 사항입니다. 다른 대카테고리와 이름이 겹치지 않게 작성하세요.
+                options:
+                  maxlength: 40
+
+          - name: draft
+            label: 초안으로 저장
+            type: boolean
+            required: false
+            default: true
+            description: 켜져 있으면 실제 블로그에는 공개되지 않습니다.
+
+          - name: lang
+            label: 글 언어
+            type: select
+            required: true
+            default: ko
+            options:
+              placeholder: 언어 선택
+              values:
+                - name: ko
+                  label: 한국어
+                - name: en
+                  label: English
+                - name: ja
+                  label: 日本語
+
+          - name: body
+            label: 본문
+            type: rich-text
+            required: true
+            description: Editor에서는 블로그처럼 작성하고, Source에서는 Markdown을 직접 편집할 수 있습니다.
+            options:
+              format: markdown
+              switcher: true
+              media: post_images
+              categories: [image]
+              extensions: [png, jpg, jpeg, webp, gif]
+              rename: safe
+
+      - name: about
+        label: 소개 페이지
+        type: file
+        path: src/content/spec/about.md
+        format: yaml-frontmatter
+        fields:
+          - name: body
+            label: About 내용
+            type: rich-text
+            required: true
+            description: 제목, 문단, 목록, 링크와 이미지를 자유롭게 넣을 수 있습니다.
+            options:
+              format: markdown
+              switcher: true
+              media: page_images
+              categories: [image]
+              extensions: [png, jpg, jpeg, webp, gif]
+              rename: safe
+        commit:
+          templates:
+            update: "page: update about.md"
+
+settings:
+  content:
+    merge: true
+  commit:
+    identity: user
+    templates:
+      create: "post: create {filename}"
+      update: "post: update {filename}"
+      delete: "post: remove {filename}"
+      rename: "post: rename {oldFilename} to {newFilename}"

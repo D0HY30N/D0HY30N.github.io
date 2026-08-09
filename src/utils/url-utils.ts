@@ -16,13 +16,24 @@ export function getPostUrlBySlug(slug: string): string {
 	return url(`/posts/${slug}/`);
 }
 
-export type CategoryValue = string | string[] | null | undefined;
+export type CategoryHierarchy = {
+	parent?: string | null;
+	child?: string | null;
+};
+
+export type CategoryValue = string | string[] | CategoryHierarchy | null | undefined;
 
 export function getCategoryPath(category: CategoryValue): string[] {
 	if (Array.isArray(category)) {
 		return category.map((part) => part.trim()).filter(Boolean);
 	}
 	if (!category) return [];
+	if (typeof category === "object") {
+		return [category.parent, category.child]
+			.filter((part): part is string => typeof part === "string")
+			.map((part) => part.trim())
+			.filter(Boolean);
+	}
 	// Keep the earlier `Parent -> Child` notation backward compatible.
 	return category.split(/\s*->\s*/).map((part) => part.trim()).filter(Boolean);
 }
