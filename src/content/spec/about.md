@@ -1,4 +1,5 @@
 ---
+cms: pages
 ---
 
 # About

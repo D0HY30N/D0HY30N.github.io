@@ -103,8 +103,8 @@ content:
           - name: category
             label: 카테고리
             type: object
-            required: false
-            description: 대카테고리만 사용해도 되고, 필요할 때 소카테고리를 추가할 수 있습니다.
+            required: true
+            description: 모든 글에 대카테고리와 소카테고리를 모두 입력하세요.
             fields:
               - name: parent
                 label: 대카테고리
@@ -115,8 +115,8 @@ content:
               - name: child
                 label: 소카테고리
                 type: string
-                required: false
-                description: 선택 사항입니다. 다른 대카테고리와 이름이 겹치지 않게 작성하세요.
+                required: true
+                description: 필수 항목입니다. 다른 대카테고리와 이름이 겹치지 않게 작성하세요.
                 options:
                   maxlength: 40
 
