@@ -18,26 +18,34 @@ const profileConf = profileConfig;
 const licenseConf = licenseConfig;
 const postUrl = decodeURIComponent(Astro.url.toString());
 ---
-<div class={`relative transition overflow-hidden bg-[var(--license-block-bg)] py-5 px-6 ${className}`}>
-    <div class="transition font-bold text-black/75 dark:text-white/75">
-        {title}
+<div class={`relative overflow-hidden border border-black/5 bg-[var(--license-block-bg)] px-4 py-3 transition dark:border-white/10 sm:px-5 ${className}`}>
+    <div class="relative z-10 min-w-0 pr-12">
+        <div class="truncate text-sm font-semibold text-black/75 transition dark:text-white/75" title={title}>
+            {title}
+        </div>
+        <a href={postUrl} title={postUrl} class="link mt-0.5 block truncate text-sm text-[var(--primary)]">
+            {postUrl}
+        </a>
     </div>
-    <a href={postUrl} class="link text-[var(--primary)]">
-        {postUrl}
-    </a>
-    <div class="flex gap-6 mt-2">
-        <div>
-            <div class="transition text-black/30 dark:text-white/30 text-sm">{i18n(I18nKey.author)}</div>
-            <div class="transition text-black/75 dark:text-white/75 line-clamp-2">{profileConf.name}</div>
+
+    <dl class="relative z-10 mt-2.5 flex flex-wrap items-baseline gap-x-5 gap-y-1 text-sm">
+        <div class="flex min-w-0 items-baseline gap-1.5">
+            <dt class="text-black/30 transition dark:text-white/30">{i18n(I18nKey.author)}</dt>
+            <dd class="truncate text-black/70 transition dark:text-white/70">{profileConf.name}</dd>
         </div>
-        <div>
-            <div class="transition text-black/30 dark:text-white/30 text-sm">{i18n(I18nKey.publishedAt)}</div>
-            <div class="transition text-black/75 dark:text-white/75 line-clamp-2">{formatDateToYYYYMMDD(pubDate)}</div>
+        <div class="flex min-w-0 items-baseline gap-1.5">
+            <dt class="text-black/30 transition dark:text-white/30">{i18n(I18nKey.publishedAt)}</dt>
+            <dd class="truncate text-black/70 transition dark:text-white/70">{formatDateToYYYYMMDD(pubDate)}</dd>
         </div>
-        <div>
-            <div class="transition text-black/30 dark:text-white/30 text-sm">{i18n(I18nKey.license)}</div>
-            <a href={licenseConf.url} target="_blank" class="link text-[var(--primary)] line-clamp-2">{licenseConf.name}</a>
+        <div class="flex min-w-0 items-baseline gap-1.5">
+            <dt class="text-black/30 transition dark:text-white/30">{i18n(I18nKey.license)}</dt>
+            <dd class="truncate">
+                <a href={licenseConf.url} target="_blank" rel="license noopener noreferrer" class="link text-[var(--primary)]">
+                    {licenseConf.name}
+                </a>
+            </dd>
         </div>
-    </div>
-    <Icon name="fa6-brands:creative-commons" class="transition text-[15rem] absolute pointer-events-none right-6 top-1/2 -translate-y-1/2 text-black/5 dark:text-white/5"></Icon>
+    </dl>
+
+    <Icon name="fa6-brands:creative-commons" class="pointer-events-none absolute right-3 top-1/2 text-[6.5rem] text-black/[0.035] transition -translate-y-1/2 dark:text-white/[0.04]"></Icon>
 </div>
