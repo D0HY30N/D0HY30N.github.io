@@ -23,7 +23,7 @@ const postUrl = decodeURIComponent(Astro.url.toString());
         <div class="truncate text-sm font-semibold text-black/75 transition dark:text-white/75" title={title}>
             {title}
         </div>
-        <a href={postUrl} title={postUrl} class="link mt-0.5 block truncate text-sm text-[var(--primary)]">
+        <a href={postUrl} title={postUrl} class="link mt-0.5 inline-block max-w-full truncate align-bottom text-sm text-[var(--primary)]">
             {postUrl}
         </a>
     </div>
