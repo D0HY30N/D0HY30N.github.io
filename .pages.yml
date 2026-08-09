@@ -1,0 +1,94 @@
+media:
+  - name: post_images
+    label: 글 이미지
+    input: public/images/posts
+    output: /images/posts
+    rename: safe
+    categories: [image]
+    extensions: [png, jpg, jpeg, webp, gif]
+    commit:
+      templates:
+        create: "media: add {filename}"
+        update: "media: update {filename}"
+        delete: "media: remove {filename}"
+        rename: "media: rename {oldFilename} to {newFilename}"
+
+content:
+  - name: posts
+    label: 블로그 글
+    type: collection
+    path: src/content/posts
+    format: yaml-frontmatter
+    subfolders: false
+    filename:
+      template: "{year}-{month}-{day}-{primary}.md"
+      field: create
+    view:
+      fields: [title, published, draft, category]
+      primary: title
+      sort: [published, title]
+      search: [title, description, tags, category]
+      default:
+        sort: published
+        order: desc
+    fields:
+      - name: title
+        label: 제목
+        type: string
+        required: true
+        options:
+          maxlength: 120
+      - name: published
+        label: 작성일
+        type: date
+        required: true
+        options:
+          format: yyyy-MM-dd
+      - name: description
+        label: 요약
+        type: text
+        description: 글 목록과 검색 결과에 표시되는 짧은 설명입니다.
+      - name: image
+        label: 표지 이미지
+        type: image
+        options:
+          media: post_images
+          extensions: [png, jpg, jpeg, webp, gif]
+          rename: safe
+      - name: tags
+        label: 태그
+        type: string
+        list: true
+      - name: category
+        label: 카테고리
+        type: string
+      - name: draft
+        label: 초안
+        type: boolean
+        default: true
+        description: 켜져 있으면 실제 블로그에는 공개되지 않습니다.
+      - name: lang
+        label: 글 언어
+        type: string
+        default: ko
+      - name: body
+        label: 본문
+        type: rich-text
+        required: true
+        options:
+          format: markdown
+          switcher: true
+          media: post_images
+          extensions: [png, jpg, jpeg, webp, gif]
+          rename: safe
+
+settings:
+  content:
+    merge: true
+  commit:
+    identity: user
+    templates:
+      create: "post: create {filename}"
+      update: "post: update {filename}"
+      delete: "post: remove {filename}"
+      rename: "post: rename {oldFilename} to {newFilename}"
