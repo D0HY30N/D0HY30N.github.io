@@ -11,7 +11,6 @@ export const zh_TW: Translation = {
 	[Key.categories]: "分類",
 	[Key.recentPosts]: "最新文章",
 
-	[Key.comments]: "評論",
 
 	[Key.untitled]: "無標題",
 	[Key.uncategorized]: "未分類",

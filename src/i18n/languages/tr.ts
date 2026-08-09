@@ -11,7 +11,6 @@ export const tr: Translation = {
 	[Key.categories]: "Katagoriler",
 	[Key.recentPosts]: "Son Paylaşımlar",
 
-	[Key.comments]: "Yorumlar",
 
 	[Key.untitled]: "Başlıksız",
 	[Key.uncategorized]: "Katagorisiz",

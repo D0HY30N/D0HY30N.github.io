@@ -8,7 +8,6 @@
 
 - Framework: [Astro](https://astro.build/)
 - Theme: [Fuwari](https://github.com/saicaca/fuwari)
-- Comments: [giscus](https://giscus.app/)
 - Hosting: GitHub Pages
 
 ## Credits ✨
