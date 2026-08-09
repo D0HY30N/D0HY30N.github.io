@@ -28,18 +28,18 @@ const postUrl = decodeURIComponent(Astro.url.toString());
         </a>
     </div>
 
-    <dl class="relative z-10 mt-2 flex flex-nowrap items-baseline gap-x-2 overflow-hidden whitespace-nowrap text-xs leading-4 sm:gap-x-5">
-        <div class="flex min-w-0 shrink-0 items-baseline gap-1.5">
-            <dt class="sr-only text-black/30 transition dark:text-white/30 sm:not-sr-only">{i18n(I18nKey.author)}</dt>
-            <dd class="truncate text-black/70 transition dark:text-white/70">{profileConf.name}</dd>
+    <dl class="relative z-10 mt-1.5 grid grid-cols-3 overflow-hidden text-[10px] leading-3 sm:mt-2 sm:flex sm:flex-nowrap sm:items-baseline sm:gap-x-5 sm:whitespace-nowrap sm:text-xs sm:leading-4">
+        <div class="min-w-0 pr-1 text-center sm:flex sm:shrink-0 sm:items-baseline sm:gap-1.5 sm:pr-0 sm:text-left">
+            <dt class="truncate text-black/30 transition dark:text-white/30">{i18n(I18nKey.author)}</dt>
+            <dd class="truncate text-black/70 transition dark:text-white/70" title={profileConf.name}>{profileConf.name}</dd>
         </div>
-        <div class="flex min-w-0 shrink-0 items-baseline gap-1.5 border-l border-black/10 pl-2 dark:border-white/10 sm:border-l-0 sm:pl-0">
-            <dt class="sr-only text-black/30 transition dark:text-white/30 sm:not-sr-only">{i18n(I18nKey.publishedAt)}</dt>
-            <dd class="truncate text-black/70 transition dark:text-white/70">{formatDateToYYYYMMDD(pubDate)}</dd>
+        <div class="min-w-0 border-l border-black/10 px-1 text-center dark:border-white/10 sm:flex sm:shrink-0 sm:items-baseline sm:gap-1.5 sm:border-l-0 sm:px-0 sm:text-left">
+            <dt class="truncate text-black/30 transition dark:text-white/30">{i18n(I18nKey.publishedAt)}</dt>
+            <dd class="truncate text-black/70 transition dark:text-white/70" title={formatDateToYYYYMMDD(pubDate)}>{formatDateToYYYYMMDD(pubDate)}</dd>
         </div>
-        <div class="flex min-w-0 shrink-0 items-baseline gap-1.5 border-l border-black/10 pl-2 dark:border-white/10 sm:border-l-0 sm:pl-0">
-            <dt class="sr-only text-black/30 transition dark:text-white/30 sm:not-sr-only">{i18n(I18nKey.license)}</dt>
-            <dd class="truncate">
+        <div class="min-w-0 border-l border-black/10 pl-1 text-center dark:border-white/10 sm:flex sm:shrink-0 sm:items-baseline sm:gap-1.5 sm:border-l-0 sm:pl-0 sm:text-left">
+            <dt class="truncate text-black/30 transition dark:text-white/30">{i18n(I18nKey.license)}</dt>
+            <dd class="truncate" title={licenseConf.name}>
                 <a href={licenseConf.url} target="_blank" rel="license noopener noreferrer" class="link text-[var(--primary)]">
                     {licenseConf.name}
                 </a>

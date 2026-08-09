@@ -187,8 +187,22 @@ const bannerOffset =
 		@apply h-[var(--banner-height-home)] translate-y-[var(--bannerOffset)]
 	}
 	@media (max-width: 639px) {
+		.enable-banner {
+			--mobile-banner-height: clamp(9rem, 42vw, 10.5rem);
+		}
+		.enable-banner #banner-wrapper {
+			top: 0 !important;
+			height: var(--mobile-banner-height);
+		}
+		.enable-banner #banner {
+			height: var(--mobile-banner-height);
+			transform: scale(1.02);
+		}
 		.enable-banner #banner img {
-			object-position: 85% center !important;
+			object-position: center !important;
+		}
+		.enable-banner #main-panel {
+			top: calc(var(--mobile-banner-height) - 1.25rem) !important;
 		}
 	}
 	.enable-banner.is-home #main-grid {
