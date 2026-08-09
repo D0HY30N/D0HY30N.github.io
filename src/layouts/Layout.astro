@@ -14,6 +14,7 @@ import {
 	DARK_MODE,
 	DEFAULT_THEME,
 	LIGHT_MODE,
+	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
 	PAGE_WIDTH,
 } from "../constants/constants";
 import { defaultFavicons } from "../constants/icon";
@@ -170,6 +171,9 @@ const bannerOffset =
 	bannerOffset,
 	'banner-height-home': `${BANNER_HEIGHT_HOME}vh`,
 	'banner-height': `${BANNER_HEIGHT}vh`,
+	'banner-height-home-mobile': `${BANNER_HEIGHT_EXTEND + BANNER_HEIGHT * 0.9}vh`,
+	'banner-height-mobile': `${BANNER_HEIGHT * 0.9}vh`,
+	'main-panel-overlap': `${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem`,
 }}>
 @tailwind components;
 @layer components {
@@ -187,22 +191,17 @@ const bannerOffset =
 		@apply h-[var(--banner-height-home)] translate-y-[var(--bannerOffset)]
 	}
 	@media (max-width: 639px) {
-		.enable-banner {
-			--mobile-banner-height: clamp(9rem, 42vw, 10.5rem);
-		}
-		.enable-banner #banner-wrapper {
-			top: 0 !important;
-			height: var(--mobile-banner-height);
-		}
+		.enable-banner #banner-wrapper,
 		.enable-banner #banner {
-			height: var(--mobile-banner-height);
-			transform: scale(1.02);
-		}
-		.enable-banner #banner img {
-			object-position: center !important;
+			height: var(--banner-height-home-mobile);
 		}
 		.enable-banner #main-panel {
-			top: calc(var(--mobile-banner-height) - 1.25rem) !important;
+			top: calc(var(--banner-height-mobile) - var(--main-panel-overlap)) !important;
+		}
+		.enable-banner #banner img {
+			object-position: 85% center !important;
+			transform: scale(0.9);
+			transform-origin: 85% center;
 		}
 	}
 	.enable-banner.is-home #main-grid {
