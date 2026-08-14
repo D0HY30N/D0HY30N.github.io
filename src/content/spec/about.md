@@ -38,8 +38,3 @@ cms: pages
 * 정보보안기사
 
 
-
-### Contact
-
-- [Email](mailto:d0hy30n2@gmail.com)
-- [GitHub](https://github.com/D0HY30N)
