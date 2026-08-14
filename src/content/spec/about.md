@@ -39,7 +39,7 @@ cms: pages
 
 
 
-### Contact
+## Contact
 
-- Email: d0hy30n2@gmail.com
-- Github: 
+- [Email](mailto:d0hy30n2@gmail.com)
+- [GitHub](https://github.com/D0HY30N)
