@@ -59,6 +59,7 @@ export const profileConfig: ProfileConfig = {
 	avatar: "assets/images/profile-avatar.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "D0HY30N",
 	bio: "D0HY30N's Notes",
+	email: "d0hy30n2@gmail.com",
 	links: [
 		{
 			name: "GitHub",

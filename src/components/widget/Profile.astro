@@ -29,11 +29,53 @@ const config = profileConfig;
                     </a>
             )}
             {config.links.length == 1 && <a rel="me" aria-label={config.links[0].name} href={config.links[0].url} target="_blank"
-                                            class="btn-regular rounded-lg h-10 gap-2 px-3 font-bold active:scale-95">
+                                            class="btn-regular min-w-[6.25rem] justify-center rounded-lg h-10 gap-2 px-3 font-bold active:scale-95">
                 <Icon name={config.links[0].icon} class="text-[1.5rem]"></Icon>
                 {config.links[0].name}
             </a>}
+            {config.email && <button type="button" data-email-copy={config.email} aria-label="Copy email address" title="Copy email address"
+                                      class="btn-regular min-w-[6.25rem] justify-center rounded-lg h-10 gap-2 px-3 font-bold active:scale-95">
+                <Icon name="material-symbols:mail-outline-rounded" class="text-[1.5rem]"></Icon>
+                <span data-email-copy-label aria-live="polite">Email</span>
+            </button>}
         </div>
     </div>
 </div>
+
+<script>
+async function copyEmail(value: string) {
+    if (!navigator.clipboard || !window.isSecureContext) {
+        throw new Error("Clipboard API is unavailable");
+    }
+    await navigator.clipboard.writeText(value);
+}
+
+document.addEventListener("click", async (event: MouseEvent) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const button = target.closest<HTMLButtonElement>("[data-email-copy]");
+    if (!button) return;
+
+    const email = button.dataset.emailCopy;
+    const label = button.querySelector<HTMLElement>("[data-email-copy-label]");
+    if (!email || !label) return;
+
+    const previousTimeout = button.dataset.emailCopyTimeout;
+    if (previousTimeout) clearTimeout(Number(previousTimeout));
+
+    try {
+        await copyEmail(email);
+        label.textContent = "Copied!";
+    } catch {
+        label.textContent = "Try again";
+    }
+
+    const timeoutId = window.setTimeout(() => {
+        label.textContent = "Email";
+        delete button.dataset.emailCopyTimeout;
+    }, 1400);
+    button.dataset.emailCopyTimeout = timeoutId.toString();
+});
+</script>
 
