@@ -29,7 +29,7 @@ cms: pages
 ### CVE
 
 * CVE-2026-68979
-* CVE-2026-62440
+* CVE-2026-62440 
 
 
 
@@ -39,7 +39,7 @@ cms: pages
 
 
 
-## Contact
+### Contact
 
 - [Email](mailto:d0hy30n2@gmail.com)
 - [GitHub](https://github.com/D0HY30N)
