@@ -13,6 +13,8 @@ cms: pages
 
 시간이 지난 뒤에도 다시 참고할 수 있는 글을 차근차근 쌓고 있습니다.
 
+
+
 ### Interests
 
 - Web / Mobile / API Security
@@ -20,14 +22,20 @@ cms: pages
 - Source Code Review
 - System / Active Directory Security
 
+
+
 ### Career
 
 - **㈜에스에스알 모의해킹 컨설턴트** (2024.07 ~ 현재)
 
+
+
 ### CVE
 
-- **CVE-2026-68979** — 등록
-- **CVE-2026-62440** — 번호 예약
+- **CVE-2026-68979**
+- **CVE-2026-62440**
+
+
 
 ### Certification
 
