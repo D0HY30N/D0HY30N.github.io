@@ -104,19 +104,20 @@ content:
             label: 카테고리
             type: object
             required: true
-            description: 모든 글에 대카테고리와 소카테고리를 모두 입력하세요.
+            description: 소카테고리는 필수입니다. 대카테고리를 비우면 소카테고리가 최상위에 바로 표시됩니다.
             fields:
               - name: parent
                 label: 대카테고리
                 type: string
-                required: true
+                required: false
+                description: 카테고리를 묶어 표시할 때만 입력하세요.
                 options:
                   maxlength: 40
               - name: child
                 label: 소카테고리
                 type: string
                 required: true
-                description: 필수 항목입니다. 다른 대카테고리와 이름이 겹치지 않게 작성하세요.
+                description: 필수 항목입니다. 대카테고리 사용 여부와 관계없이 다른 소카테고리와 이름이 겹치지 않게 작성하세요.
                 options:
                   maxlength: 40
 
