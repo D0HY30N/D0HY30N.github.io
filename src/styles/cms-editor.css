@@ -1,0 +1,33 @@
+.cms-source-editor {
+  --source-border: light-dark(#d9dce2, #464950);
+  --source-bg: light-dark(#fff, #212327);
+  --source-panel: light-dark(#f7f8fa, #2b2e34);
+  color-scheme: light dark;
+  color: light-dark(#25272b, #eceef2);
+  border: 1px solid var(--source-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.cms-source-toolbar {
+  display: flex; flex-wrap: wrap; gap: 3px; padding: 8px;
+  background: var(--source-panel); border-bottom: 1px solid var(--source-border);
+}
+.cms-source-editor button {
+  font: inherit; font-size: 13px; font-weight: 500; color: inherit;
+  min-width: 30px; min-height: 32px; padding: 4px 8px; border: 0; border-radius: 4px;
+  background: transparent; cursor: pointer;
+}
+.cms-source-editor button:hover { background: light-dark(#e5e9ef, #424750); }
+.cms-source-editor :focus-visible { outline: 2px solid #6b83a5; outline-offset: -2px; }
+.cms-source-input {
+  display: block; width: 100%; min-height: 560px; box-sizing: border-box; resize: vertical;
+  font: 14px/1.85 'JetBrains Mono Variable', ui-monospace, monospace;
+  color: inherit; background: var(--source-bg); border: 0; padding: 18px;
+  tab-size: 2;
+}
+.cms-source-insert { padding: 16px; background: var(--source-panel); border-bottom: 1px solid var(--source-border); }
+.cms-source-insert label { display: block; font-size: 13px; }
+.cms-source-insert input { box-sizing: border-box; width: 100%; margin-top: 6px; padding: 8px; border: 1px solid var(--source-border); border-radius: 4px; background: var(--source-bg); color: inherit; font: inherit; }
+.cms-source-insert p { font-size: 12px; margin: 8px 0; }
+.cms-source-insert [role='alert'] { color: light-dark(#ac3131, #ffb0b0); }
+.cms-source-insert button { margin: 8px 6px 0 0; border: 1px solid var(--source-border); }

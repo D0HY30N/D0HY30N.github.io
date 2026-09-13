@@ -31,8 +31,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Check Astro and content
         run: pnpm check
-      - name: Check category navigation
-        run: node --test scripts/category-groups.test.mjs scripts/post-navigation.test.mjs
+      - name: Check navigation and CMS preview
+        run: node --test scripts/category-groups.test.mjs scripts/post-navigation.test.mjs scripts/cms-preview.test.mjs
       - name: Build blog and search index
         run: pnpm build
       - name: Upload Pages artifact

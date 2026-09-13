@@ -93,9 +93,8 @@ collections:
         hint: '예: ko, en. 비워 두면 블로그 기본 언어를 사용합니다.'
       - name: body
         label: 본문
-        widget: markdown
-        modes: [rich_text, raw]
-        hint: 일반 글은 서식 편집기로, Fuwari 확장 문법과 복잡한 코드 예시는 Markdown 모드로 편집하세요.
+        widget: markdown-source
+        hint: 마크다운 원문으로 작성합니다. 상단 툴바에서 이미지·굵게·링크를 넣을 수 있고, 문법 예제는 작성 가이드에서 볼 수 있습니다.
 
   - name: pages
     label: 페이지
@@ -107,5 +106,29 @@ collections:
         fields:
           - name: body
             label: 본문
-            widget: markdown
-            modes: [rich_text, raw]
+            widget: markdown-source
+
+  - name: writing-guides
+    label: 작성 가이드
+    description: CMS에서 참고하는 읽기 전용 문서입니다. 블로그 글 목록과 검색에는 포함되지 않습니다.
+    files:
+      - name: markdown-guide
+        label: 마크다운 문법
+        file: cms/guides/markdown.md
+        format: yaml-frontmatter
+        fields:
+          - { name: title, label: 가이드, widget: string, readonly: true }
+          - name: body
+            label: 문법 예제 원문
+            widget: markdown-source
+            readonly: true
+      - name: fuwari-guide
+        label: Fuwari 확장 문법
+        file: cms/guides/fuwari.md
+        format: yaml-frontmatter
+        fields:
+          - { name: title, label: 가이드, widget: string, readonly: true }
+          - name: body
+            label: 문법 예제 원문
+            widget: markdown-source
+            readonly: true
