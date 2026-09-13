@@ -12,13 +12,14 @@ if (!aboutPost) {
 }
 
 const { Content } = await render(aboutPost);
+const hasContent = Boolean(aboutPost.body?.trim());
 ---
 <MainGridLayout title={i18n(I18nKey.about)} description={i18n(I18nKey.about)}>
     <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
         <div class="card-base z-10 px-9 py-6 relative w-full">
-            <Markdown class="mt-2">
+            {hasContent && <Markdown class="mt-2">
                 <Content />
-            </Markdown>
+            </Markdown>}
         </div>
     </div>
 </MainGridLayout>
