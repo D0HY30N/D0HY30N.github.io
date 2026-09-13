@@ -17,14 +17,14 @@ const imageUrl = (source: string) => source.startsWith("/") ? url(source) : sour
 
 {enable && imageSrc && (
     <div id="sidebar-image" class:list={[
-        "relative aspect-square w-full max-w-[240px] mx-auto",
+        "relative aspect-square w-full max-w-[192px] mx-auto",
         className,
     ]} style={style}>
-        <img src={imageUrl(imageSrc)} alt={alt} width="240" height="240" decoding="async"
+        <img src={imageUrl(imageSrc)} alt={alt} width="192" height="192" decoding="async"
             class:list={["absolute inset-0 w-full h-full object-contain", darkImageSrc && "dark:hidden"]}
             style={{ objectPosition: position }} />
         {darkImageSrc && (
-            <img src={imageUrl(darkImageSrc)} alt={alt} width="240" height="240" decoding="async"
+            <img src={imageUrl(darkImageSrc)} alt={alt} width="192" height="192" decoding="async"
                 class="hidden dark:block absolute inset-0 w-full h-full object-contain"
                 style={{ objectPosition: position }} />
         )}

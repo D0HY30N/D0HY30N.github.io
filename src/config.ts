@@ -56,7 +56,7 @@ export const navBarConfig: NavBarConfig = {
 	],
 };
 
-// 카테고리 위 240x240 이미지. 투명 배경으로 표시하며 darkSrc는 다크모드용입니다.
+// 카테고리 위 192x192 이미지. 투명 배경으로 표시하며 darkSrc는 다크모드용입니다.
 export const sidebarImageConfig: SidebarImageConfig = {
 	enable: true,
 	src: "/favicon/cat-favicon-light-source.png",
