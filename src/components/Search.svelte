@@ -2,9 +2,10 @@
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import Icon from "@iconify/svelte";
-import { url } from "@utils/url-utils.ts";
 import { onMount } from "svelte";
 import type { SearchResult } from "@/global";
+
+export let hasPosts = true;
 
 let keywordDesktop = "";
 let keywordMobile = "";
@@ -12,24 +13,6 @@ let result: SearchResult[] = [];
 let isSearching = false;
 let pagefindLoaded = false;
 let initialized = false;
-
-const fakeResult: SearchResult[] = [
-	{
-		url: url("/"),
-		meta: {
-			title: "This Is a Fake Search Result",
-		},
-		excerpt:
-			"Because the search cannot work in the <mark>dev</mark> environment.",
-	},
-	{
-		url: url("/"),
-		meta: {
-			title: "If You Want to Test the Search",
-		},
-		excerpt: "Try running <mark>npm build && npm preview</mark> instead.",
-	},
-];
 
 const togglePanel = () => {
 	const panel = document.getElementById("search-panel");
@@ -48,7 +31,7 @@ const setPanelVisibility = (show: boolean, isDesktop: boolean): void => {
 };
 
 const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
-	if (!keyword) {
+	if (!keyword || !hasPosts) {
 		setPanelVisibility(false, isDesktop);
 		result = [];
 		return;
@@ -68,9 +51,7 @@ const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
 			searchResults = await Promise.all(
 				response.results.map((item) => item.data()),
 			);
-		} else if (import.meta.env.DEV) {
-			searchResults = fakeResult;
-		} else {
+		} else if (import.meta.env.PROD) {
 			searchResults = [];
 			console.error("Pagefind is not available in production environment.");
 		}
@@ -98,10 +79,7 @@ onMount(() => {
 		if (keywordMobile) search(keywordMobile, false);
 	};
 
-	if (import.meta.env.DEV) {
-		console.log(
-			"Pagefind is not available in development mode. Using mock data.",
-		);
+	if (import.meta.env.DEV || !hasPosts) {
 		initializeSearch();
 	} else {
 		document.addEventListener("pagefindready", () => {

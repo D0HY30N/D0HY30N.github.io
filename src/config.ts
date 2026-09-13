@@ -7,7 +7,6 @@ import type {
 	SidebarImageConfig,
 	SiteConfig,
 } from "./types/config";
-import { LinkPreset } from "./types/config";
 
 export const siteConfig: SiteConfig = {
 	title: "D0HY30N's Blog",
@@ -19,7 +18,7 @@ export const siteConfig: SiteConfig = {
 	},
 	banner: {
 		enable: false,
-		src: "assets/images/demo-banner.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+		src: "",
 		position: "center", // Equivalent to object-position, only supports 'top', 'center', 'bottom'. 'center' by default
 		credit: {
 			enable: false, // Display the credit text of the banner image
@@ -47,7 +46,6 @@ export const navBarConfig: NavBarConfig = {
 			name: "Posts",
 			url: "/",
 		},
-		LinkPreset.About,
 		{
 			name: "Github",
 			url: "https://github.com/D0HY30N", // Internal links should not include the base path, as it is automatically added
@@ -65,40 +63,16 @@ export const sidebarImageConfig: SidebarImageConfig = {
 	position: "center",
 };
 
-// 글의 parentCategory(대분류), category(소분류)로 새 분류를 만들 수 있습니다.
-// 아래 설정은 기존 글의 기본 소속, 표시 순서, 빈 카테고리를 유지합니다.
-// Markdown의 parentCategory가 우선하며, 소분류 하나는 대분류 하나에 속합니다.
+// 글의 parentCategory(대분류), category(소분류)로 카테고리를 자동 생성합니다.
+// 표시 순서나 빈 카테고리를 고정하고 싶을 때만 groups를 설정하세요.
 export const categoryConfig: CategoryConfig = {
-	groups: [
-		{ name: "보안", categories: ["WEB", "시스템", "네트워크"] },
-		{ name: "개발", categories: ["Astro"] },
-		{ name: "블로그", categories: ["Examples", "Guides"] },
-	],
+	groups: [],
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "assets/images/demo-avatar.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "D0HY30N",
 	bio: "",
-	links: [
-		{
-			name: "Twitter",
-			icon: "fa6-brands:twitter", // Visit https://icones.js.org/ for icon codes
-			// You will need to install the corresponding icon set if it's not already included
-			// `pnpm add @iconify-json/<icon-set-name>`
-			url: "https://twitter.com",
-		},
-		{
-			name: "Steam",
-			icon: "fa6-brands:steam",
-			url: "https://store.steampowered.com",
-		},
-		{
-			name: "GitHub",
-			icon: "fa6-brands:github",
-			url: "https://github.com/saicaca/fuwari",
-		},
-	],
+	links: [],
 };
 
 export const licenseConfig: LicenseConfig = {
