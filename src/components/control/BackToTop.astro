@@ -5,7 +5,7 @@ import { Icon } from "astro-icon/components";
 <!-- There can't be a filter on parent element, or it will break `fixed` -->
 <div class="back-to-top-wrapper hidden lg:block">
     <div id="back-to-top-btn" class="back-to-top-btn hide flex items-center rounded-2xl overflow-hidden transition" onclick="backToTop()">
-        <button aria-label="Back to Top" class="back-to-top-control flex items-center justify-center transition h-12 w-12">
+        <button aria-label="Back to Top" class="back-to-top-control flex items-center justify-center transition h-12 w-12 bg-black/[0.04] dark:bg-white/[0.06]">
             <Icon name="material-symbols:keyboard-arrow-up-rounded" class="mx-auto"></Icon>
         </button>
     </div>
@@ -21,11 +21,10 @@ import { Icon } from "astro-icon/components";
     pointer-events: none
 
 .back-to-top-control
-    background: unquote("color-mix(in oklab, var(--btn-card-bg-hover) 75%, var(--card-bg))")
     &:hover, &:focus-visible
-        background: var(--btn-card-bg-hover)
+        background: var(--btn-regular-bg-hover)
     &:active
-        background: var(--btn-card-bg-active)
+        background: var(--btn-regular-bg-active)
 
 .back-to-top-btn
     color: var(--primary)
