@@ -1,0 +1,21 @@
+---
+interface Props {
+	path: string[];
+	total: number;
+}
+
+const { path, total } = Astro.props;
+---
+
+<!-- Reduce the 2.25rem gap between the heading and first post title by 25%. -->
+<header class="pl-6 pr-6 md:pl-4 md:pr-9 pt-4 pb-2 -mb-[0.5625rem] onload-animation">
+    <h1 class="flex flex-wrap items-center gap-x-2 gap-y-1 text-4xl font-bold leading-relaxed text-90">
+        {path.map((name, index) => (
+            <>
+                {index > 0 && <span aria-hidden="true" class="mx-[2px] text-50 font-normal">&gt;</span>}
+                <span>{name}</span>
+            </>
+        ))}
+        <span class="text-lg font-normal tabular-nums text-50">{`(${total})`}</span>
+    </h1>
+</header>

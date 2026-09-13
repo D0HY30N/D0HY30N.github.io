@@ -1,0 +1,69 @@
+---
+import { Icon } from "astro-icon/components";
+import type { PostNavigation } from "../utils/post-navigation";
+
+interface Props {
+	navigation: PostNavigation;
+}
+
+const { navigation } = Astro.props;
+const directions = ["newer", "older"] as const;
+---
+
+<post-navigation data-navigation={JSON.stringify(navigation)} hidden={!navigation.all.newer && !navigation.all.older} class="block mb-4 w-full">
+    <nav aria-label="Post navigation" class="grid md:grid-cols-2 gap-4 overflow-hidden w-full">
+        {directions.map((direction) => {
+            const post = navigation.all[direction];
+            return <a data-direction={direction} href={post?.url} hidden={!post}
+                   aria-label={post ? `${direction === "newer" ? "Next" : "Previous"} post: ${post.title}` : undefined}
+                   class:list={["btn-card rounded-2xl w-full min-w-0 h-[3.75rem] max-w-full px-4 gap-4 font-bold overflow-hidden active:scale-95", {
+                       "!justify-start md:col-start-1": direction === "newer",
+                       "!justify-end md:col-start-2": direction === "older",
+                   }]}>
+                    {direction === "newer" && <Icon name="material-symbols:chevron-left-rounded" class="text-[2rem] text-[var(--primary)] shrink-0" aria-hidden="true" />}
+                    <span data-post-title class="min-w-0 overflow-hidden transition text-ellipsis whitespace-nowrap text-black/75 dark:text-white/75">{post?.title}</span>
+                    {direction === "older" && <Icon name="material-symbols:chevron-right-rounded" class="text-[2rem] text-[var(--primary)] shrink-0" aria-hidden="true" />}
+                </a>;
+        })}
+    </nav>
+</post-navigation>
+
+<style>
+    /* Card display styles must not reveal a missing neighbor. */
+    post-navigation[hidden],
+    a[hidden] {
+        display: none !important;
+    }
+</style>
+
+<script>
+import { getActivePostNeighbors, type PostNavigation } from "../utils/post-navigation";
+
+class PostNavigationElement extends HTMLElement {
+    connectedCallback() {
+        const navigation: PostNavigation = JSON.parse(this.dataset.navigation!);
+        const neighbors = getActivePostNeighbors(navigation, window.location.search);
+        this.hidden = !neighbors.newer && !neighbors.older;
+
+        for (const direction of ["newer", "older"] as const) {
+            const link = this.querySelector<HTMLAnchorElement>(`[data-direction="${direction}"]`)!;
+            const title = link.querySelector<HTMLElement>("[data-post-title]")!;
+            const post = neighbors[direction];
+
+            link.hidden = !post;
+            title.textContent = post?.title || "";
+            if (post) {
+                link.href = post.url;
+                link.setAttribute("aria-label", `${direction === "newer" ? "Next" : "Previous"} post: ${post.title}`);
+            } else {
+                link.removeAttribute("href");
+                link.removeAttribute("aria-label");
+            }
+        }
+    }
+}
+
+if (!customElements.get("post-navigation")) {
+    customElements.define("post-navigation", PostNavigationElement);
+}
+</script>

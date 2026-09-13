@@ -1,0 +1,30 @@
+---
+import type { GetStaticPaths } from "astro";
+import Pagination from "../../../components/control/Pagination.astro";
+import PostPage from "../../../components/PostPage.astro";
+import { PAGE_SIZE } from "../../../constants/constants";
+import MainGridLayout from "../../../layouts/MainGridLayout.astro";
+import { getSortedPosts, getTagList } from "../../../utils/content-utils";
+
+export const getStaticPaths = (async ({ paginate }) => {
+	const [posts, tags] = await Promise.all([getSortedPosts(), getTagList()]);
+
+	return tags.flatMap((tag) =>
+		paginate(
+			posts.filter((post) => post.data.tags.some((value) => value.trim() === tag.name)),
+			{
+				pageSize: PAGE_SIZE,
+				params: { tag: tag.name },
+				props: { tag: tag.name },
+			},
+		),
+	);
+}) satisfies GetStaticPaths;
+
+const { page, tag } = Astro.props;
+---
+
+<MainGridLayout title={`#${tag}`}>
+    <PostPage page={page}></PostPage>
+    <Pagination class="mx-auto onload-animation" page={page} style={`animation-delay: calc(var(--content-delay) + ${page.data.length * 50}ms)`}></Pagination>
+</MainGridLayout>

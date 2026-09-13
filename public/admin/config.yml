@@ -1,0 +1,111 @@
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms@0.209.1/schema/sveltia-cms.json
+backend:
+  name: github
+  repo: D0HY30N/D0HY30N.github.io
+  branch: main
+  auth_methods: [token]
+
+site_url: https://d0hy30n.github.io
+display_url: https://d0hy30n.github.io
+media_folder: public/images/uploads
+public_folder: /images/uploads
+media_libraries:
+  default:
+    config:
+      max_file_size: 10485760
+slug:
+  encoding: unicode
+  clean_accents: true
+  sanitize_replacement: '-'
+
+collections:
+  - name: posts
+    label: 게시글
+    label_singular: 게시글
+    description: 글을 저장하면 GitHub Pages가 자동으로 갱신됩니다. 비공개 초안도 공개 저장소에는 파일로 남습니다.
+    folder: src/content/posts
+    create: true
+    extension: md
+    format: yaml-frontmatter
+    slug: '{{slug}}'
+    nested:
+      depth: 10
+      subfolders: false
+    summary: '{{title}}'
+    sortable_fields: [published, title, parentCategory, category]
+    view_groups:
+      - label: 대카테고리
+        field: parentCategory
+      - label: 소카테고리
+        field: category
+    fields:
+      - { name: title, label: 제목, widget: string }
+      - name: published
+        label: 작성일
+        widget: datetime
+        default: '{{now}}'
+        format: YYYY-MM-DD
+        date_format: YYYY-MM-DD
+        time_format: false
+      - name: updated
+        label: 수정일
+        widget: datetime
+        required: false
+        format: YYYY-MM-DD
+        date_format: YYYY-MM-DD
+        time_format: false
+      - name: description
+        label: 글 요약
+        widget: text
+        required: false
+        hint: 게시글 목록에 표시되는 짧은 설명입니다.
+      - name: parentCategory
+        label: 대카테고리
+        widget: string
+        required: false
+        hint: '예: 보안, 개발. 새 이름을 입력하면 사이드바에 자동으로 생깁니다.'
+      - name: category
+        label: 소카테고리
+        widget: string
+        required: true
+        hint: '예: WEB, 시스템, Astro. 같은 소카테고리 이름은 한 대카테고리에서만 사용하세요.'
+      - name: tags
+        label: 태그
+        widget: list
+        required: false
+        default: []
+        hint: 쉼표로 구분해서 입력할 수 있습니다.
+      - name: image
+        label: 대표 이미지
+        widget: image
+        required: false
+        hint: 이미지를 끌어 놓거나 선택해 업로드하세요. 본문에도 이미지를 넣을 수 있습니다.
+      - name: draft
+        label: 초안으로 보관
+        widget: boolean
+        default: true
+        hint: 켜 두면 블로그에 표시되지 않습니다. 공개할 때 끄고 저장하세요.
+      - name: lang
+        label: 본문 언어
+        widget: string
+        required: false
+        default: ko
+        hint: '예: ko, en. 비워 두면 블로그 기본 언어를 사용합니다.'
+      - name: body
+        label: 본문
+        widget: markdown
+        modes: [rich_text, raw]
+        hint: 일반 글은 서식 편집기로, Fuwari 확장 문법과 복잡한 코드 예시는 Markdown 모드로 편집하세요.
+
+  - name: pages
+    label: 페이지
+    files:
+      - name: about
+        label: About
+        file: src/content/spec/about.md
+        format: yaml-frontmatter
+        fields:
+          - name: body
+            label: 본문
+            widget: markdown
+            modes: [rich_text, raw]

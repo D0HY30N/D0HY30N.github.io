@@ -1,0 +1,49 @@
+---
+import I18nKey from "../../i18n/i18nKey";
+import { i18n } from "../../i18n/translation";
+import { getCategoryGroups } from "../../utils/content-utils";
+import { url } from "../../utils/url-utils";
+import ButtonLink from "../control/ButtonLink.astro";
+import WidgetLayout from "./WidgetLayout.astro";
+
+const groups = await getCategoryGroups();
+const categories = groups.flatMap((group) => group.categories);
+const totalPosts = categories.reduce((total, category) => total + category.count, 0);
+
+interface Props {
+	class?: string;
+	style?: string;
+}
+const className = Astro.props.class;
+const style = Astro.props.style;
+---
+
+<WidgetLayout name={i18n(I18nKey.categories)} id="categories"
+                class={className} style={style}
+>
+    <nav aria-label={i18n(I18nKey.categories)}>
+        <ButtonLink url={url("/")} badge={String(totalPosts)} label="View all posts">
+            ALL
+        </ButtonLink>
+        {groups.map((group, index) =>
+            <section aria-labelledby={`category-group-${index}`} class="mt-3">
+                <h3 id={`category-group-${index}`} class="px-2 pb-1 text-[1.075rem] font-bold text-90 break-words">
+                    {group.name}
+                </h3>
+                <ul class="ml-2 border-l border-black/10 dark:border-white/10 pl-2">
+                    {group.categories.map((category) =>
+                        <li>
+                            <ButtonLink
+                                url={category.url}
+                                badge={String(category.count)}
+                                label={`View all posts in the ${category.name} category`}
+                            >
+                                {category.name}
+                            </ButtonLink>
+                        </li>
+                    )}
+                </ul>
+            </section>
+        )}
+    </nav>
+</WidgetLayout>

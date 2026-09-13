@@ -1,0 +1,44 @@
+---
+import type { GetStaticPaths } from "astro";
+import Pagination from "../../../components/control/Pagination.astro";
+import PostPage from "../../../components/PostPage.astro";
+import PostListHeading from "../../../components/PostListHeading.astro";
+import { PAGE_SIZE } from "../../../constants/constants";
+import MainGridLayout from "../../../layouts/MainGridLayout.astro";
+import { getCategoryList, getSortedPosts } from "../../../utils/content-utils";
+import { getCategoryUrl } from "../../../utils/url-utils";
+
+export const getStaticPaths = (async ({ paginate }) => {
+	const [posts, categories] = await Promise.all([
+		getSortedPosts(),
+		getCategoryList(),
+	]);
+
+	return categories.flatMap((category) =>
+		paginate(
+			posts.filter((post) => getCategoryUrl(post.data.category) === category.url),
+			{
+				pageSize: PAGE_SIZE,
+				params: { category: category.name },
+				props: { category: category.name, parentCategory: category.parentCategory },
+			},
+		),
+	);
+}) satisfies GetStaticPaths;
+
+const { page, category, parentCategory } = Astro.props;
+---
+
+<MainGridLayout title={category}>
+    <PostListHeading path={[parentCategory, category]} total={page.total} />
+    {page.data.length > 0 ? (
+        <>
+            <PostPage page={page} category={category}></PostPage>
+            <Pagination class="mx-auto onload-animation" page={page} style={`animation-delay: calc(var(--content-delay) + ${page.data.length * 50}ms)`}></Pagination>
+        </>
+    ) : (
+        <div class="card-base px-6 md:px-9 py-6 onload-animation">
+            <p class="text-75">아직 등록된 글이 없습니다.</p>
+        </div>
+    )}
+</MainGridLayout>

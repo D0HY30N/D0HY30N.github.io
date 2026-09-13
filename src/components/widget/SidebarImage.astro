@@ -1,0 +1,31 @@
+---
+import { Icon } from "astro-icon/components";
+import { sidebarImageConfig } from "../../config";
+import ImageWrapper from "../misc/ImageWrapper.astro";
+
+interface Props {
+	class?: string;
+	style?: string;
+}
+
+const { style } = Astro.props;
+const className = Astro.props.class;
+const { enable, src, alt, position } = sidebarImageConfig;
+const imageSrc = src.trim();
+---
+
+{enable && (
+    <div id="sidebar-image" class:list={[
+        "card-base relative aspect-square w-full max-w-[15rem] mx-auto border border-black/[0.06] dark:border-white/[0.08]",
+        className,
+    ]} style={style}>
+        {imageSrc ? (
+            <ImageWrapper src={imageSrc} alt={alt} position={position} class="absolute inset-0 w-full h-full" />
+        ) : (
+            <div class="absolute inset-0 flex items-center justify-center bg-black/[0.02] dark:bg-white/[0.025]">
+                <Icon name="material-symbols:image-outline-rounded" class="text-[2.5rem] text-black/20 dark:text-white/20" aria-hidden="true" />
+                <span class="sr-only">이미지 영역</span>
+            </div>
+        )}
+    </div>
+)}
