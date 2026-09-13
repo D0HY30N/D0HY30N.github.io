@@ -1,14 +1,14 @@
 # yaml-language-server: $schema=https://unpkg.com/@sveltia/cms@0.211.4/schema/sveltia-cms.json
 backend:
   name: github
-  repo: D0HY30N/D0HY30N.github.io
+  repo: D0HY30N/D0HY30N.github.io2
   branch: main
   auth_methods: [token]
 
-site_url: https://d0hy30n.github.io
-display_url: https://d0hy30n.github.io
+site_url: https://d0hy30n.github.io/D0HY30N.github.io2/
+display_url: https://d0hy30n.github.io/D0HY30N.github.io2/
 media_folder: public/images/uploads
-public_folder: /images/uploads
+public_folder: /D0HY30N.github.io2/images/uploads
 media_libraries:
   default:
     config:

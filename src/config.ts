@@ -56,12 +56,12 @@ export const navBarConfig: NavBarConfig = {
 	],
 };
 
-// 카테고리 위 정사각형 이미지. src가 비어 있으면 빈 이미지 칸을 표시합니다.
-// 예: public/images/sidebar.jpg 파일을 넣고 src를 "/images/sidebar.jpg"로 설정하세요.
+// 카테고리 위 64x64 이미지. 투명 배경으로 표시하며 darkSrc는 다크모드용입니다.
 export const sidebarImageConfig: SidebarImageConfig = {
 	enable: true,
-	src: "",
-	alt: "",
+	src: "/favicon/favicon-light-128.png?v=cat-1",
+	darkSrc: "/favicon/favicon-dark-128.png?v=cat-1",
+	alt: "D0HY30N의 고양이",
 	position: "center",
 };
 

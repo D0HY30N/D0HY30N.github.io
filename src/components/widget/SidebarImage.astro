@@ -1,7 +1,6 @@
 ---
-import { Icon } from "astro-icon/components";
 import { sidebarImageConfig } from "../../config";
-import ImageWrapper from "../misc/ImageWrapper.astro";
+import { url } from "../../utils/url-utils";
 
 interface Props {
 	class?: string;
@@ -10,22 +9,24 @@ interface Props {
 
 const { style } = Astro.props;
 const className = Astro.props.class;
-const { enable, src, alt, position } = sidebarImageConfig;
+const { enable, src, darkSrc, alt, position = "center" } = sidebarImageConfig;
 const imageSrc = src.trim();
+const darkImageSrc = darkSrc?.trim();
+const imageUrl = (source: string) => source.startsWith("/") ? url(source) : source;
 ---
 
-{enable && (
+{enable && imageSrc && (
     <div id="sidebar-image" class:list={[
-        "card-base relative aspect-square w-full max-w-[15rem] mx-auto border border-black/[0.06] dark:border-white/[0.08]",
+        "w-[64px] h-[64px] mx-auto",
         className,
     ]} style={style}>
-        {imageSrc ? (
-            <ImageWrapper src={imageSrc} alt={alt} position={position} class="absolute inset-0 w-full h-full" />
-        ) : (
-            <div class="absolute inset-0 flex items-center justify-center bg-black/[0.02] dark:bg-white/[0.025]">
-                <Icon name="material-symbols:image-outline-rounded" class="text-[2.5rem] text-black/20 dark:text-white/20" aria-hidden="true" />
-                <span class="sr-only">이미지 영역</span>
-            </div>
+        <img src={imageUrl(imageSrc)} alt={alt} width="64" height="64" decoding="async"
+            class:list={["w-full h-full object-contain", darkImageSrc && "dark:hidden"]}
+            style={{ objectPosition: position }} />
+        {darkImageSrc && (
+            <img src={imageUrl(darkImageSrc)} alt={alt} width="64" height="64" decoding="async"
+                class="hidden dark:block w-full h-full object-contain"
+                style={{ objectPosition: position }} />
         )}
     </div>
 )}

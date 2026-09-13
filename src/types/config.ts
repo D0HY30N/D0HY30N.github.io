@@ -71,6 +71,7 @@ export type CategoryConfig = {
 export type SidebarImageConfig = {
 	enable: boolean;
 	src: string;
+	darkSrc?: string;
 	alt: string;
 	position?: "top" | "center" | "bottom";
 };

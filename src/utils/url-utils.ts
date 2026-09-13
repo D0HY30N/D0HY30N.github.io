@@ -39,5 +39,11 @@ export function getDir(path: string): string {
 }
 
 export function url(path: string) {
-	return joinUrl("", import.meta.env.BASE_URL, path);
+	const base = joinUrl("", import.meta.env.BASE_URL, "");
+	const normalizedPath = joinUrl("", path);
+	// CMS image URLs already include the GitHub Pages project path.
+	if (normalizedPath === base.slice(0, -1) || normalizedPath.startsWith(base)) {
+		return normalizedPath;
+	}
+	return joinUrl(base, path);
 }
