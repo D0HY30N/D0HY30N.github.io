@@ -7,9 +7,9 @@ interface Props {
 const { path, total } = Astro.props;
 ---
 
-<!-- Reduce the 2.25rem gap between the heading and first post title by 25%. -->
-<header class="pl-6 pr-6 md:pl-4 md:pr-9 pt-4 pb-2 -mb-[0.5625rem] onload-animation">
-    <h1 class="flex flex-wrap items-center gap-x-2 gap-y-1 text-4xl font-bold leading-relaxed text-90">
+<!-- Heading-to-post gap: 27px to 25.65px (5% less at the default font size). -->
+<header class="pl-6 pr-6 md:pl-4 md:pr-9 pt-4 pb-2 -mb-[0.646875rem] onload-animation">
+    <h1 class="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-4xl font-bold leading-relaxed text-90">
         {path.map((name, index) => (
             <>
                 {index > 0 && <span aria-hidden="true" class="mx-[2px] text-50 font-normal">&gt;</span>}
