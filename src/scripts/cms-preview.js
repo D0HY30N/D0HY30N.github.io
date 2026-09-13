@@ -3,9 +3,35 @@ import previewStyles from "../styles/cms-preview.css?inline";
 import markdownExtensions from "../styles/markdown-extend.styl?inline";
 import themeVariables from "../styles/variables.styl?inline";
 
+function supportEmbeddedPreviewFrames() {
+	// Some embedded browsers leave Blob iframe navigations at about:blank.
+	// Reuse the same CMS document via srcdoc only in that case. Keep its sandbox.
+	new MutationObserver((records) => {
+		for (const { target: frame } of records) {
+			if (!(frame instanceof HTMLIFrameElement) || !frame.matches("iframe.preview")) continue;
+			const source = frame.getAttribute("src") || "";
+			if (!source.startsWith(`blob:${window.location.origin}/`)) continue;
+			const stillBlank = () => frame.isConnected
+				&& frame.getAttribute("src") === source
+				&& !frame.hasAttribute("srcdoc")
+				&& frame.contentDocument?.URL === "about:blank";
+			window.setTimeout(async () => {
+				if (!stillBlank()) return;
+				try {
+					const html = await (await fetch(source)).text();
+					if (stillBlank()) frame.srcdoc = html;
+				} catch {
+					// A normally loaded CMS iframe revokes its Blob URL itself.
+				}
+			}, 1500);
+		}
+	}).observe(document.body, { subtree: true, attributes: true, attributeFilter: ["src"] });
+}
+
 // Only the CMS iframe receives these styles; the editor UI stays independent.
 export function registerBlogPreviews(options) {
 	const { CMS, createClass, h } = window;
+	supportEmbeddedPreviewFrames();
 	CMS.registerPreviewStyle(
 		[themeVariables, previewStyles, markdownExtensions].join("\n"),
 		{ raw: true },
