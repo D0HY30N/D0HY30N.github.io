@@ -1,0 +1,68 @@
+import { siteConfig } from "../config";
+import previewStyles from "../styles/cms-preview.css?inline";
+import markdownExtensions from "../styles/markdown-extend.styl?inline";
+import themeVariables from "../styles/variables.styl?inline";
+
+// Only the CMS iframe receives these styles; the editor UI stays independent.
+export function registerBlogPreviews(options) {
+	const { CMS, createClass, h } = window;
+	CMS.registerPreviewStyle(
+		[themeVariables, previewStyles, markdownExtensions].join("\n"),
+		{ raw: true },
+	);
+
+	const createPreview = (isPost) => createClass({
+		getInitialState() {
+			return { dark: window.matchMedia("(prefers-color-scheme: dark)").matches };
+		},
+		componentDidMount() {
+			this.applyTheme();
+		},
+		componentDidUpdate() {
+			this.applyTheme();
+		},
+		applyTheme() {
+			const root = this.props.document.documentElement;
+			root.classList.toggle("dark", this.state.dark);
+			root.style.setProperty("--hue", String(siteConfig.themeColor.hue));
+			root.lang = this.props.entry.getIn(["data", "lang"]) || "ko";
+		},
+		render() {
+			const { entry, widgetFor } = this.props;
+			const value = (name) => entry.getIn(["data", name]);
+			const image = value("image");
+			const tags = value("tags");
+			const tagNames = tags?.toArray ? tags.toArray() : Array.isArray(tags) ? tags : [];
+			const category = [value("parentCategory"), value("category")].filter(Boolean).join(" / ");
+			const date = String(value("published") || "").slice(0, 10);
+			const themeButton = (dark, text) => h("button", {
+				type: "button",
+				"aria-pressed": this.state.dark === dark,
+				onClick: () => this.setState({ dark }),
+			}, text);
+
+			return h("div", { className: "cms-blog-preview" },
+				h("nav", { className: "preview-toolbar", "aria-label": "미리보기 테마" },
+					h("span", {}, "본문 미리보기"),
+					h("div", {}, themeButton(false, "라이트"), themeButton(true, "다크")),
+				),
+				h("article", { className: "preview-article" },
+					isPost && h("header", { className: "preview-header" },
+						h("h1", { className: "preview-title" }, value("title") || "제목을 입력하세요"),
+						h("div", { className: "preview-meta" },
+							date && h("time", { dateTime: date }, date),
+							category && h("span", {}, category),
+							tagNames.length > 0 && h("span", {}, tagNames.map((tag) => `#${tag}`).join(" / ")),
+						),
+					),
+					image && h("div", { className: "preview-cover" }, widgetFor("image")),
+					h("div", { className: "prose dark:prose-invert prose-base !max-w-none custom-md" }, widgetFor("body")),
+				),
+			);
+		},
+	});
+
+	CMS.registerPreviewTemplate("posts", createPreview(true));
+	CMS.registerPreviewTemplate("about", createPreview(false));
+	CMS.init(options);
+}

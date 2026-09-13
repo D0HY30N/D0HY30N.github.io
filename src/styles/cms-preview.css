@@ -1,0 +1,169 @@
+@import "@fontsource/roboto/400.css";
+@import "@fontsource/roboto/500.css";
+@import "@fontsource/roboto/700.css";
+@import "@fontsource-variable/jetbrains-mono";
+@import "@fontsource-variable/jetbrains-mono/wght-italic.css";
+@import "./markdown.css";
+
+@tailwind base;
+@tailwind utilities;
+
+:root {
+    color-scheme: light;
+    font-size: 14px;
+    background: var(--page-bg);
+}
+
+:root.dark {
+    color-scheme: dark;
+}
+
+body {
+    margin: 0;
+    background: var(--page-bg);
+}
+
+.preview-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--line-divider);
+    color: var(--primary);
+    font-size: 12px;
+}
+
+.preview-toolbar > div {
+    display: flex;
+    gap: 4px;
+}
+
+.preview-toolbar button {
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.preview-toolbar button:hover,
+.preview-toolbar button[aria-pressed="true"] {
+    background: var(--btn-regular-bg);
+}
+
+.preview-toolbar button:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+.preview-article {
+    max-width: 66rem;
+    margin: 0 auto;
+    padding: 24px 24px 48px;
+    overflow-wrap: anywhere;
+}
+
+.preview-header {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed var(--line-divider);
+}
+
+.preview-title {
+    position: relative;
+    margin: 0 0 12px;
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+    font-weight: 700;
+    color: rgb(0 0 0 / 90%);
+}
+
+.dark .preview-title {
+    color: rgb(255 255 255 / 90%);
+}
+
+.preview-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    color: rgb(0 0 0 / 50%);
+    font-size: .875rem;
+    font-weight: 500;
+}
+
+.dark .preview-meta {
+    color: rgb(255 255 255 / 50%);
+}
+
+.preview-cover {
+    margin: 0 0 32px;
+}
+
+.preview-cover img {
+    width: 100% !important;
+    height: auto !important;
+    border-radius: .75rem;
+}
+
+/* Sveltia uses Shiki instead of Expressive Code for its Markdown preview. */
+.custom-md pre,
+.custom-md pre.shiki {
+    background: var(--codeblock-bg) !important;
+    color: #e1e4e8 !important;
+    border: 0;
+    border-radius: .75rem;
+    padding: 16px 18px;
+    margin: 16px 0;
+    overflow-x: auto;
+    font-size: .875rem;
+    font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+    line-height: 1.5rem;
+    tab-size: 2;
+}
+
+.custom-md pre code {
+    display: block;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    font-weight: 400;
+    line-height: inherit;
+    overflow: visible;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+/* The CMS selects github-light with its own UI theme. The blog always uses
+   github-dark code blocks, so translate that theme's token palette here. */
+.custom-md pre.github-light [style*="color:#005cc5" i] { color: #79b8ff !important; }
+.custom-md pre.github-light [style*="color:#6f42c1" i] { color: #b392f0 !important; }
+.custom-md pre.github-light [style*="color:#24292e" i] { color: #e1e4e8 !important; }
+.custom-md pre.github-light [style*="color:#22863a" i] { color: #85e89d !important; }
+.custom-md pre.github-light [style*="color:#d73a49" i] { color: #f97583 !important; }
+.custom-md pre.github-light [style*="color:#032f62" i] { color: #9ecbff !important; }
+.custom-md pre.github-light [style*="color:#e36209" i] { color: #ffab70 !important; }
+.custom-md pre.github-light [style*="color:#b31d28" i] { color: #fdaeb7 !important; }
+.custom-md pre.github-light [style*="color:#fafbfc" i] { color: #24292e !important; }
+.custom-md pre.github-light [style*="color:#f6f8fa" i] { color: #2f363d !important; }
+.custom-md pre.github-light [style*="color:#586069" i] { color: #d1d5da !important; }
+
+.custom-md pre ::selection {
+    background: var(--codeblock-selection);
+}
+
+@media (min-width: 768px) {
+    :root { font-size: 16px; }
+    .preview-article { padding: 24px 36px 48px; }
+    .preview-title { font-size: 2.25rem; line-height: 2.75rem; }
+    .preview-title::before {
+        content: "";
+        position: absolute;
+        top: 12px;
+        left: -18px;
+        width: 4px;
+        height: 20px;
+        border-radius: 2px;
+        background: var(--primary);
+    }
+}

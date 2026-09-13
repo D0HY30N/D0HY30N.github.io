@@ -10,6 +10,12 @@
   </head>
   <body data-pagefind-ignore>
     <noscript>글 관리 화면을 사용하려면 JavaScript를 켜 주세요.</noscript>
+    <script is:inline>window.CMS_MANUAL_INIT = true;</script>
     <script is:inline src="https://unpkg.com/@sveltia/cms@0.209.1/dist/sveltia-cms.js"></script>
+    <script>
+      import { registerBlogPreviews } from "../scripts/cms-preview";
+
+      registerBlogPreviews();
+    </script>
   </body>
 </html>
