@@ -13,7 +13,7 @@ import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 // https://astro.build/config
 export default defineConfig({
 	site: "https://d0hy30n.github.io/",
-	base: "/D0HY30N.github.io2/",
+	base: "/",
 	trailingSlash: "always",
 	integrations: [
 		tailwind({
@@ -44,7 +44,7 @@ export default defineConfig({
 		expressiveCode(codeOptions),
         svelte(),
 		sitemap({
-			filter: (page) => !new URL(page).pathname.includes("/admin/"),
+			filter: (page) => !new URL(page).pathname.startsWith("/admin/"),
 		}),
 	],
 	markdown: {
