@@ -29,6 +29,10 @@ const postsCollection = defineCollection({
 		path: ["category"],
 	}),
 });
+const specCollection = defineCollection({
+	schema: z.object({}),
+});
 export const collections = {
 	posts: postsCollection,
+	spec: specCollection,
 };

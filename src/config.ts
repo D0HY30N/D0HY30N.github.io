@@ -7,6 +7,7 @@ import type {
 	SidebarImageConfig,
 	SiteConfig,
 } from "./types/config";
+import { LinkPreset } from "./types/config";
 
 export const siteConfig: SiteConfig = {
 	title: "D0HY30N's Blog",
@@ -46,6 +47,7 @@ export const navBarConfig: NavBarConfig = {
 			name: "Posts",
 			url: "/",
 		},
+		LinkPreset.About,
 		{
 			name: "Github",
 			url: "https://github.com/D0HY30N", // Internal links should not include the base path, as it is automatically added

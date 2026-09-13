@@ -123,6 +123,7 @@ export function registerBlogPreviews(options) {
 	});
 
 	CMS.registerPreviewTemplate("posts", createPreview(true));
+	CMS.registerPreviewTemplate("about", createPreview(false));
 	CMS.registerPreviewTemplate("markdown-guide", createPreview(false));
 	CMS.registerPreviewTemplate("fuwari-guide", createPreview(false));
 	CMS.init(options);
