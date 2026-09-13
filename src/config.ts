@@ -56,11 +56,11 @@ export const navBarConfig: NavBarConfig = {
 	],
 };
 
-// 카테고리 위 64x64 이미지. 투명 배경으로 표시하며 darkSrc는 다크모드용입니다.
+// 카테고리 위 240x240 이미지. 투명 배경으로 표시하며 darkSrc는 다크모드용입니다.
 export const sidebarImageConfig: SidebarImageConfig = {
 	enable: true,
-	src: "/favicon/favicon-light-128.png?v=cat-1",
-	darkSrc: "/favicon/favicon-dark-128.png?v=cat-1",
+	src: "/favicon/cat-favicon-light-source.png",
+	darkSrc: "/favicon/cat-favicon-dark-source.png",
 	alt: "D0HY30N의 고양이",
 	position: "center",
 };
