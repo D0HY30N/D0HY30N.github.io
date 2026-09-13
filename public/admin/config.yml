@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms@0.209.1/schema/sveltia-cms.json
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms@0.211.4/schema/sveltia-cms.json
 backend:
   name: github
   repo: D0HY30N/D0HY30N.github.io
@@ -94,7 +94,7 @@ collections:
       - name: body
         label: 본문
         widget: markdown-source
-        hint: 마크다운 원문으로 작성합니다. 상단 툴바에서 이미지·굵게·링크를 넣을 수 있고, 문법 예제는 작성 가이드에서 볼 수 있습니다.
+        hint: 마크다운 원문으로 작성합니다. 툴바에서 이미지 업로드·제목·표 등을 넣을 수 있습니다. 선택한 이미지는 글을 저장할 때 함께 저장됩니다. 문법 예제는 작성 가이드에서 볼 수 있습니다.
 
   - name: pages
     label: 페이지

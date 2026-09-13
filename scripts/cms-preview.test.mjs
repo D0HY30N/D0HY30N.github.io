@@ -3,7 +3,7 @@ import { readFile, mkdir, rm } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { test, after } from "node:test";
-import { markdownEdit, validMarkdownUrl } from "../src/scripts/cms-markdown-edit.mjs";
+import { markdownEdit, markdownTableEdit, validMarkdownUrl } from "../src/scripts/cms-markdown-edit.mjs";
 
 const require = createRequire(import.meta.url);
 const astroRequire = createRequire(require.resolve("astro/package.json"));
@@ -68,4 +68,39 @@ test("all CMS body fields stay raw and guides are outside blog content", async (
 		assert.ok(file.file.startsWith("cms/guides/"));
 		assert.ok(file.fields.every((field) => field.readonly));
 	}
+});
+
+test("inserted images retain the exact temporary URL for CMS save replacement", async () => {
+	const url = "blob:https://d0hy30n.github.io/edce7c9e-0a85-4b61-9cdb-ce6c7e1e64df";
+	const edit = markdownEdit("앞\n\n뒤", 2, 2, "image", url);
+	assert.ok(edit.text.includes(url));
+	const saved = edit.text.replaceAll(url, "/images/uploads/image.png");
+	assert.match((await renderMarkdown(saved)).html, /src="\/images\/uploads\/image.png"/);
+});
+
+test("table and rule tools preserve surrounding paragraphs and render as blocks", async () => {
+	const source = "앞 문단\n\n뒤 문단";
+	const edit = markdownTableEdit(source, 4, 3, 2);
+	const value = source.slice(0, edit.start) + edit.text + source.slice(edit.end);
+	const { html } = await renderMarkdown(value);
+	assert.match(html, /<p>앞 문단<\/p>/);
+	assert.match(html, /<p>뒤 문단<\/p>/);
+	assert.equal((html.match(/<th[\s>]/g) || []).length, 3);
+	assert.equal((html.match(/<td[\s>]/g) || []).length, 6);
+	assert.equal(value.slice(edit.selectionStart, edit.selectionEnd), "제목 1");
+	assert.throws(() => markdownTableEdit("", 0, 0, 2), RangeError);
+	assert.throws(() => markdownTableEdit("", 0, 3, 1.5), RangeError);
+	const rule = markdownEdit(source, 0, 4, "rule");
+	assert.match((await renderMarkdown(source.slice(0, rule.start) + rule.text + source.slice(rule.end))).html, /<hr/);
+});
+
+test("heading level changes and checklist insertion retain selected content", async () => {
+	const source = "## 기존 제목";
+	assert.equal(markdownEdit(source, 0, source.length, "h1").text, "# 기존 제목");
+	const items = "첫 번째\n두 번째";
+	const edit = markdownEdit(items, 0, items.length, "task");
+	const { html } = await renderMarkdown(edit.text);
+	assert.equal((html.match(/type="checkbox"/g) || []).length, 2);
+	assert.match(html, /첫 번째/);
+	assert.match(html, /두 번째/);
 });

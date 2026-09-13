@@ -1,4 +1,5 @@
 let renderer;
+let previewSanitizer;
 const repositoryRequests = new Map();
 
 const imageTypes = {
@@ -10,7 +11,18 @@ export async function preparePreview(markdown, { document, getAsset }) {
 	renderer ||= import("../markdown/render.mjs");
 	const rendered = await (await renderer).renderMarkdown(markdown);
 	const template = document.createElement("template");
-	template.innerHTML = window.DOMPurify.sanitize(rendered.html, {
+	if (!previewSanitizer) {
+		// Use our own sanitizer so this exception never affects the CMS interface.
+		previewSanitizer = window.DOMPurify(window);
+		previewSanitizer.addHook("uponSanitizeAttribute", (node, attribute) => {
+			// Only local draft images may retain a blob URL; other URL checks remain on.
+			if (node.tagName === "IMG" && attribute.attrName === "src"
+				&& attribute.attrValue.startsWith(`blob:${window.location.origin}/`)) {
+				attribute.forceKeepAttr = true;
+			}
+		});
+	}
+	template.innerHTML = previewSanitizer.sanitize(rendered.html, {
 		ADD_TAGS: ["spoiler", "iframe"],
 		ADD_ATTR: ["target", "allow", "allowfullscreen", "frameborder", "scrolling", "repo"],
 		FORBID_TAGS: ["script", "style"],
