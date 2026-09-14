@@ -25,7 +25,7 @@ const links = Astro.props.links;
            target={link.external ? "_blank" : null}
            rel={link.external ? "noopener noreferrer" : undefined}
         >
-            <span class="transition text-[1.375rem] leading-8 text-90 font-medium group-hover:text-[var(--primary)] group-active:text-[var(--primary)]">
+            <span class="transition text-[1.3125rem] leading-8 text-90 font-medium group-hover:text-[var(--primary)] group-active:text-[var(--primary)]">
                 {link.name}
             </span>
             {link.external && <Icon name="fa6-solid:arrow-up-right-from-square"
@@ -73,7 +73,10 @@ const links = Astro.props.links;
     const menuButton = document.getElementById("nav-menu-switch");
     const menuPanel = document.getElementById("nav-menu-panel");
 
-    if (menuButton && menuPanel) {
+    // Swup reruns production scripts while retaining the navbar element.
+    // Bind once per button so one click cannot toggle the panel twice.
+    if (menuButton && menuPanel && menuButton.dataset.menuInitialized !== "true") {
+        menuButton.dataset.menuInitialized = "true";
         const desktop = window.matchMedia("(min-width: 768px)");
         const isOpen = () => menuButton.getAttribute("aria-expanded") === "true";
         const setOpen = (open: boolean, returnFocus = false) => {
