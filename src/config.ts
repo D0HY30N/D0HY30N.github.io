@@ -76,6 +76,14 @@ export const profileConfig: ProfileConfig = {
 	name: "D0HY30N",
 };
 
+export const commentsConfig = {
+	enabled: true,
+	repo: "D0HY30N/D0HY30N.github.io",
+	repoId: "R_kgDOUY84xg",
+	category: "Announcements",
+	categoryId: "DIC_kwDOUY84xs4DFkgY",
+};
+
 export const expressiveCodeConfig: ExpressiveCodeConfig = {
 	// Note: Some styles (such as background color) are being overridden, see the astro.config.mjs file.
 	// Please select a dark theme, as this blog theme currently only supports dark background color

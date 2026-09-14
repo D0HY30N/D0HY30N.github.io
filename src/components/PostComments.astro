@@ -1,0 +1,101 @@
+---
+import { commentsConfig } from "../config";
+import { url } from "../utils/url-utils";
+
+// The canonical pathname keeps ALL/category views attached to the same thread.
+const term = Astro.url.pathname;
+const themeOrigin = Astro.site ?? Astro.url;
+---
+
+{commentsConfig.enabled && (
+    <post-comments id="comments" aria-label="댓글" data-pagefind-ignore
+        data-light-theme={new URL(url("/comments/light.css"), themeOrigin).href}
+        data-dark-theme={new URL(url("/comments/dark.css"), themeOrigin).href}
+        class="block w-full px-6 md:px-9 mt-6 mb-6">
+        <div class="comments-content">
+            <template>
+                <giscus-widget
+                    id="comments-thread"
+                    repo={commentsConfig.repo}
+                    repoid={commentsConfig.repoId}
+                    category={commentsConfig.category}
+                    categoryid={commentsConfig.categoryId}
+                    mapping="specific"
+                    term={term}
+                    strict="1"
+                    reactionsenabled="0"
+                    emitmetadata="0"
+                    inputposition="top"
+                    lang="ko"
+                    loading="lazy"
+                ></giscus-widget>
+            </template>
+            <div data-comments-mount></div>
+            <noscript>
+                <p class="text-50 text-sm">댓글을 보려면 자바스크립트를 활성화해 주세요.</p>
+            </noscript>
+        </div>
+    </post-comments>
+)}
+
+<style>
+    .comments-content {
+        border-top: 1px solid var(--line-divider);
+        padding-top: 1.75rem;
+    }
+
+    giscus-widget {
+        display: block;
+        width: 100%;
+    }
+
+    giscus-widget::part(iframe) {
+        display: block;
+        width: 100%;
+        border: 0;
+    }
+</style>
+
+<script>
+import "giscus";
+
+class PostComments extends HTMLElement {
+    private themeObserver?: MutationObserver;
+
+    connectedCallback() {
+        // Create a fresh widget after Swup restores a page from its cache.
+        // giscus removes its message listener when the old widget disconnects.
+        const template = this.querySelector("template");
+        const mount = this.querySelector("[data-comments-mount]");
+        if (!template || !mount) return;
+
+        const fragment = template.content.cloneNode(true) as DocumentFragment;
+        const widget = fragment.querySelector("giscus-widget");
+        if (!widget) return;
+
+        const syncTheme = () => {
+            const path = document.documentElement.classList.contains("dark")
+                ? this.dataset.darkTheme
+                : this.dataset.lightTheme;
+            if (path) widget.setAttribute("theme", new URL(path, location.origin).href);
+        };
+
+        syncTheme();
+        mount.replaceChildren(fragment);
+        this.themeObserver?.disconnect();
+        this.themeObserver = new MutationObserver(syncTheme);
+        this.themeObserver.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ["class"],
+        });
+    }
+
+    disconnectedCallback() {
+        this.themeObserver?.disconnect();
+    }
+}
+
+if (!customElements.get("post-comments")) {
+    customElements.define("post-comments", PostComments);
+}
+</script>

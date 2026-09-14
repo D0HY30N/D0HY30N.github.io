@@ -1,6 +1,7 @@
 ---
 import path from "node:path";
 import Markdown from "@components/misc/Markdown.astro";
+import PostComments from "@components/PostComments.astro";
 import PostNavigation from "@components/PostNavigation.astro";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
@@ -58,6 +59,7 @@ const jsonLd = {
 ---
 <MainGridLayout banner={entry.data.image} title={entry.data.title} description={postDescription} lang={entry.data.lang} setOGTypeArticle={true} headings={headings}>
     <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, "\\u003c")}></script>
+    <meta slot="head" name="giscus:backlink" content={postUrl} />
     <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative mb-4">
         <div id="post-container" class:list={["card-base z-10 px-6 md:px-9 pt-6 pb-4 relative w-full ",
             {}
@@ -121,5 +123,6 @@ const jsonLd = {
     </div>
 
     <PostNavigation navigation={navigation}></PostNavigation>
+    <PostComments />
 
 </MainGridLayout>
