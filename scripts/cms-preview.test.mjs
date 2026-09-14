@@ -31,6 +31,15 @@ test("CMS folders determine both category levels without manual values", () => {
 	}
 });
 
+test("CMS rejects posts outside category folders before changing their data", () => {
+	const entry = {
+		get: (key) => ({ collection: "posts", path: "src/content/posts/http.md" })[key],
+		setIn: () => assert.fail("Uncategorized posts must be rejected before metadata updates"),
+	};
+	assert.throws(() => syncPostFolderCategory({ entry }), (error) =>
+		error.message === "saving_failed" && error.cause?.message === "소카테고리 폴더를 선택하거나 만들어 주세요.");
+});
+
 test("folder synchronization leaves other CMS collections untouched", () => {
 	for (const collection of ["pages", "writing-guides"]) {
 		const entry = { get: (key) => key === "collection" ? collection : undefined };

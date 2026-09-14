@@ -17,7 +17,12 @@ export function categoriesFromPostPath(path) {
 export function syncPostFolderCategory({ entry }) {
 	if (entry.get("collection") !== "posts") return entry;
 	const folders = categoriesFromPostPath(entry.get("path"));
-	if (!folders) throw new Error("게시글의 저장 폴더를 확인해 주세요.");
+	if (!folders?.category) {
+		// Sveltia displays custom save errors from the saving_failed cause.
+		throw new Error("saving_failed", {
+			cause: new Error("소카테고리 폴더를 선택하거나 만들어 주세요."),
+		});
+	}
 	return entry
 		.setIn(["data", "parentCategory"], folders.parentCategory)
 		.setIn(["data", "category"], folders.category);
