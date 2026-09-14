@@ -1,5 +1,24 @@
 const POSTS_FOLDER = "src/content/posts/";
 
+export function registerCategoryFields() {
+	const { CMS, createClass, h } = window;
+	const control = createClass({
+		render() {
+			const { field, forID, value } = this.props;
+			return h("input", {
+				id: forID,
+				type: "text",
+				className: "cms-category-display",
+				"aria-label": field.get("label"),
+				readOnly: true,
+				// The dash is only a display value; an absent parent stays empty in Markdown.
+				value: value || (field.get("name") === "parentCategory" ? "-" : ""),
+			});
+		},
+	});
+	CMS.registerWidget("folder-category", control);
+}
+
 export function categoriesFromPostPath(path) {
 	if (typeof path !== "string") return undefined;
 	const normalized = path.replaceAll("\\", "/").replace(/^\/+/, "");

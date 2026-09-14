@@ -4,7 +4,7 @@ import markdownExtensions from "../styles/markdown-extend.styl?inline";
 import themeVariables from "../styles/variables.styl?inline";
 import { preparePreview, hydratePreviewCards, handlePreviewClick } from "./cms-preview-content";
 import { registerMarkdownEditor } from "./cms-markdown-editor";
-import { syncPostFolderCategory } from "./cms-post-category.mjs";
+import { registerCategoryFields, syncPostFolderCategory } from "./cms-post-category.mjs";
 
 function supportEmbeddedPreviewFrames() {
 	// Some embedded browsers leave Blob iframe navigations at about:blank.
@@ -35,6 +35,7 @@ function supportEmbeddedPreviewFrames() {
 export function registerBlogPreviews(options) {
 	const { CMS, createClass, h } = window;
 	registerMarkdownEditor();
+	registerCategoryFields();
 	CMS.registerEventListener({ name: "preSave", handler: syncPostFolderCategory });
 	supportEmbeddedPreviewFrames();
 	CMS.registerPreviewStyle(

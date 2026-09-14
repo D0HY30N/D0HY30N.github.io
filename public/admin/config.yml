@@ -62,13 +62,13 @@ collections:
         required: false
       - name: parentCategory
         label: 대카테고리
-        widget: string
+        widget: folder-category
         readonly: true
         required: false
         default: ''
       - name: category
         label: 소카테고리
-        widget: string
+        widget: folder-category
         readonly: true
         required: false
         default: ''
