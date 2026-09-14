@@ -10,9 +10,9 @@ const { path, total } = Astro.props;
 <!-- Offset the combined 2.25rem padding to keep the heading-to-post gap at 21px. -->
 <header class="pl-6 pr-6 md:pl-4 md:pr-9 pt-4 pb-2 mb-[calc(21px_-_2.25rem)] onload-animation">
     <h1 class="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-4xl font-bold leading-relaxed text-90">
-        {path.map((name, index) => (
+        {path.filter(Boolean).map((name, index) => (
             <>
-                {index > 0 && <span aria-hidden="true" class="mx-[2px] text-50 font-normal">&gt;</span>}
+                {index > 0 && <span aria-hidden="true" class="mx-[3px] text-50 font-normal">&gt;</span>}
                 <span>{name}</span>
             </>
         ))}

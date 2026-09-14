@@ -43,14 +43,9 @@ export function groupCategories<T extends { name: string }>(
 		return { name: group.name, categories: children };
 	});
 
-	// 설정에 없는 소분류도 누락되지 않도록 마지막에 모아 보여줍니다.
+	// 대분류가 없는 카테고리는 ALL 바로 아래에 독립적으로 표시합니다.
 	if (remaining.size > 0) {
-		const fallback = groups.find((group) => group.name === "기타");
-		if (fallback) {
-			fallback.categories.push(...remaining.values());
-		} else {
-			groups.push({ name: "기타", categories: [...remaining.values()] });
-		}
+		groups.unshift({ name: "", categories: [...remaining.values()] });
 	}
 
 	return groups;

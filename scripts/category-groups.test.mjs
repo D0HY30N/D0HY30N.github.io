@@ -17,19 +17,23 @@ test("configured group and child order preserves counts, links, and empty catego
     ]);
 });
 
-test("unknown categories remain reachable once in the fallback group", () => {
+test("categories without a parent appear before named groups without an invented parent", () => {
     const entries = [category("WEB", 2), category("Uncategorized", 1), category("__proto__", 1)];
     const result = groupCategories(entries, [{ name: "보안", categories: ["WEB"] }]);
-    assert.deepEqual(result[1], { name: "기타", categories: entries.slice(1) });
+    assert.deepEqual(result, [
+        { name: "", categories: entries.slice(1) },
+        { name: "보안", categories: entries.slice(0, 1) },
+    ]);
     assert.equal(result.flatMap((group) => group.categories).length, entries.length);
 });
 
-test("fallback merges with an explicitly configured 기타 group", () => {
+test("a real 기타 parent does not absorb categories without a parent", () => {
     const entries = [category("메모"), category("새 분류", 1)];
     assert.deepEqual(groupCategories(entries, [{ name: "기타", categories: ["메모"] }]), [
-        { name: "기타", categories: entries },
+        { name: "", categories: [entries[1]] },
+        { name: "기타", categories: [entries[0]] },
     ]);
-    assert.deepEqual(groupCategories(entries, []), [{ name: "기타", categories: entries }]);
+    assert.deepEqual(groupCategories(entries, []), [{ name: "", categories: entries }]);
 });
 
 test("surrounding whitespace is normalized without mutating configuration", () => {
@@ -103,15 +107,22 @@ test("an explicit Markdown parent overrides the legacy parent without duplicate 
     assert.deepEqual(configured, [{ name: "기존", categories: ["WEB", "네트워크"] }]);
 });
 
-test("legacy and ungrouped Markdown posts retain their fallback behavior", () => {
+test("legacy parents remain while ungrouped Markdown categories have no parent", () => {
     const groups = resolveCategoryGroups([
         { category: "WEB" },
         { category: "새 분류", parentCategory: " " },
         { category: null, parentCategory: null },
     ], [{ name: "보안", categories: ["WEB"] }]);
     assert.deepEqual(groupCategories([category("WEB", 1), category("새 분류", 1)], groups), [
+        { name: "", categories: [category("새 분류", 1)] },
         { name: "보안", categories: [category("WEB", 1)] },
-        { name: "기타", categories: [category("새 분류", 1)] },
+    ]);
+});
+
+test("a Blog folder without a parent stays standalone with its count and link", () => {
+    const groups = resolveCategoryGroups([{ category: "Blog", parentCategory: "" }], []);
+    assert.deepEqual(groupCategories([category("Blog", 1)], groups), [
+        { name: "", categories: [category("Blog", 1)] },
     ]);
 });
 
