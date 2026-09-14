@@ -44,7 +44,7 @@ export default defineConfig({
 		expressiveCode(codeOptions),
         svelte(),
 		sitemap({
-			filter: (page) => !new URL(page).pathname.startsWith("/admin/"),
+			filter: (page) => !new URL(page).pathname.startsWith("/d0hy30n/"),
 		}),
 	],
 	markdown: {

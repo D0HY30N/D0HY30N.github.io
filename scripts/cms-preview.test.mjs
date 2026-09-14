@@ -88,7 +88,7 @@ test("formatting changes the selection without rewriting Fuwari syntax", () => {
 });
 
 test("all CMS body fields stay raw and guides are outside blog content", async () => {
-	const config = astroRequire("yaml").parse(await readFile(new URL("../public/admin/config.yml", import.meta.url), "utf8"));
+	const config = astroRequire("yaml").parse(await readFile(new URL("../public/d0hy30n/config.yml", import.meta.url), "utf8"));
 	const fields = config.collections.flatMap((collection) => collection.fields || collection.files.flatMap((file) => file.fields));
 	for (const field of fields.filter((field) => field.name === "body")) assert.equal(field.widget, "markdown-source");
 	const guides = config.collections.find((collection) => collection.name === "writing-guides");
