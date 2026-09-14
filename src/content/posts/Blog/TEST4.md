@@ -7,7 +7,7 @@ parentCategory: ''
 category: Blog
 tags: []
 image: ''
-draft: true
+draft: false
 lang: ko
 ---
 
