@@ -22,28 +22,12 @@ after(() => rm(compiled, { force: true }));
 test("CMS folders determine both category levels without manual values", () => {
 	assert.deepEqual(categoriesFromPostPath("src/content/posts/보안/WEB/http.md"), { parentCategory: "보안", category: "WEB" });
 	assert.deepEqual(categoriesFromPostPath("src/content/posts/개발 도구/작성 환경/한글 제목.md"), { parentCategory: "개발 도구", category: "작성 환경" });
+	assert.deepEqual(categoriesFromPostPath("src/content/posts/보안/WEB/노트/http.md"), { parentCategory: "보안", category: "WEB" });
 	assert.deepEqual(categoriesFromPostPath("src/content/posts/http.md"), { parentCategory: "", category: "" });
 	assert.deepEqual(categoriesFromPostPath("/src/content/posts/WEB/http.md"), { parentCategory: "", category: "WEB" });
 	assert.deepEqual(categoriesFromPostPath("src/content/posts/시스템/linux.md"), { parentCategory: "", category: "시스템" });
 	for (const path of [undefined, "src/content/spec/about.md", "src/content/posts/", "src/content/posts/../about.md"]) {
 		assert.equal(categoriesFromPostPath(path), undefined);
-	}
-});
-
-test("CMS keeps two category levels visible and rejects deeper folders before saving", async () => {
-	const config = astroRequire("yaml").parse(await readFile(new URL("../public/d0hy30n/config.yml", import.meta.url), "utf8"));
-	const posts = config.collections.find((collection) => collection.name === "posts");
-	// Sveltia includes the file name in nested.depth.
-	assert.equal(posts.nested.depth, 3);
-	assert.equal(posts.nested.subfolders, false);
-	for (const path of ["src/content/posts/보안/WEB/노트/http.md", "src\\content\\posts\\보안\\WEB\\노트\\http.md"]) {
-		assert.throws(() => categoriesFromPostPath(path), RangeError);
-		const entry = {
-			get: (key) => ({ collection: "posts", path })[key],
-			setIn: () => assert.fail("A third category folder must be rejected before metadata updates"),
-		};
-		assert.throws(() => syncPostFolderCategory({ entry }), (error) =>
-			error.message === "saving_failed" && error.cause instanceof RangeError);
 	}
 });
 

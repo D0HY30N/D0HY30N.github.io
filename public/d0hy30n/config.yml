@@ -29,8 +29,7 @@ collections:
     format: yaml-frontmatter
     slug: '{{slug}}'
     nested:
-      # Two category folders plus the Markdown file name.
-      depth: 3
+      depth: 10
       subfolders: false
     meta:
       path: {}
