@@ -3,11 +3,12 @@ import { sidebarImageConfig } from "../../config";
 import { url } from "../../utils/url-utils";
 
 interface Props {
+	id?: string;
 	class?: string;
 	style?: string;
 }
 
-const { style } = Astro.props;
+const { id = "sidebar-image", style } = Astro.props;
 const className = Astro.props.class;
 const { enable, src, darkSrc, alt, position = "center" } = sidebarImageConfig;
 const imageSrc = src.trim();
@@ -16,7 +17,7 @@ const imageUrl = (source: string) => source.startsWith("/") ? url(source) : sour
 ---
 
 {enable && imageSrc && (
-    <div id="sidebar-image" class:list={[
+    <div id={id} class:list={[
         "relative aspect-square w-full max-w-[128px] mx-auto",
         className,
     ]} style={style}>
