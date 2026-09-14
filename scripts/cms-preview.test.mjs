@@ -19,12 +19,13 @@ await astroRequire("esbuild").build({
 const { renderMarkdown } = await import(pathToFileURL(fileURLToPath(compiled)).href);
 after(() => rm(compiled, { force: true }));
 
-test("CMS folders supply both category levels while root posts keep manual categories", () => {
+test("CMS folders determine both category levels without manual values", () => {
 	assert.deepEqual(categoriesFromPostPath("src/content/posts/보안/WEB/http.md"), { parentCategory: "보안", category: "WEB" });
 	assert.deepEqual(categoriesFromPostPath("src/content/posts/개발 도구/작성 환경/한글 제목.md"), { parentCategory: "개발 도구", category: "작성 환경" });
 	assert.deepEqual(categoriesFromPostPath("src/content/posts/보안/WEB/노트/http.md"), { parentCategory: "보안", category: "WEB" });
-	assert.deepEqual(categoriesFromPostPath("src/content/posts/http.md"), { parentCategory: "", category: undefined });
-	assert.deepEqual(categoriesFromPostPath("/src/content/posts/개발/astro.md"), { parentCategory: "개발", category: undefined });
+	assert.deepEqual(categoriesFromPostPath("src/content/posts/http.md"), { parentCategory: "", category: "" });
+	assert.deepEqual(categoriesFromPostPath("/src/content/posts/WEB/http.md"), { parentCategory: "", category: "WEB" });
+	assert.deepEqual(categoriesFromPostPath("src/content/posts/시스템/linux.md"), { parentCategory: "", category: "시스템" });
 	for (const path of [undefined, "src/content/spec/about.md", "src/content/posts/", "src/content/posts/../about.md"]) {
 		assert.equal(categoriesFromPostPath(path), undefined);
 	}

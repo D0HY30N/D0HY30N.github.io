@@ -66,8 +66,8 @@ collections:
         default: ''
       - name: category
         label: 소카테고리
-        widget: string
-        required: false
+        widget: hidden
+        default: ''
       - name: tags
         label: 태그
         widget: list
