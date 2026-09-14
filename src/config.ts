@@ -11,6 +11,8 @@ import { LinkPreset } from "./types/config";
 export const siteConfig: SiteConfig = {
 	title: "D0HY30N's Blog",
 	subtitle: "",
+	description: "보안과 개발을 공부하며 배운 내용을 기록하는 D0HY30N의 기술 블로그입니다.",
+	contentLang: "ko-KR",
 	lang: "en", // UI language: English or Korean.
 	themeColor: {
 		hue: 260, // Muted blue-gray accent

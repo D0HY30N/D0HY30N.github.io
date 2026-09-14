@@ -60,9 +60,12 @@ if (title) {
 const favicons: Favicon[] =
 	siteConfig.favicon.length > 0 ? siteConfig.favicon : defaultFavicons;
 
-// const siteLang = siteConfig.lang.replace('_', '-')
+const pageDescription = description?.trim() || siteConfig.description;
+// Category navigation and tracking parameters identify the same public page.
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site || Astro.url.origin).href;
+
 if (!lang) {
-	lang = `${siteConfig.lang}`;
+	lang = siteConfig.contentLang;
 }
 const siteLang = lang.replace("_", "-");
 
@@ -84,13 +87,15 @@ const bannerOffset =
 		<title>{pageTitle}</title>
 
 		<meta charset="UTF-8" />
-		<meta name="description" content={description || pageTitle}>
+		<meta name="description" content={pageDescription}>
 		<meta name="author" content={profileConfig.name}>
+		<link rel="canonical" href={canonicalUrl} />
 
 		<meta property="og:site_name" content={siteConfig.title}>
-		<meta property="og:url" content={Astro.url}>
+		<meta property="og:url" content={canonicalUrl}>
 		<meta property="og:title" content={pageTitle}>
-		<meta property="og:description" content={description || pageTitle}>
+		<meta property="og:description" content={pageDescription}>
+		<meta property="og:locale" content={siteLang.replace("-", "_")}>
 		{setOGTypeArticle ? (
         <meta property="og:type" content="article" />
         ) : (
@@ -98,9 +103,9 @@ const bannerOffset =
         )}
 
 		<meta name="twitter:card" content="summary_large_image">
-		<meta property="twitter:url" content={Astro.url}>
+		<meta property="twitter:url" content={canonicalUrl}>
 		<meta name="twitter:title" content={pageTitle}>
-		<meta name="twitter:description" content={description || pageTitle}>
+		<meta name="twitter:description" content={pageDescription}>
 
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
