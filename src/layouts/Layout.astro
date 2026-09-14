@@ -293,10 +293,12 @@ function loadHue() {
 	setHue(getHue())
 }
 
+let pageContentResizeObserver: ResizeObserver | undefined;
+
 function initCustomScrollbar() {
 	const bodyElement = document.querySelector('body');
 	if (!bodyElement) return;
-	OverlayScrollbars(
+	const pageScrollbar = OverlayScrollbars(
 		// docs say that a initialization to the body element would affect native functionality like window.scrollTo
 		// but just leave it here for now
 		{
@@ -307,11 +309,18 @@ function initCustomScrollbar() {
 		}, {
 		scrollbars: {
 			theme: 'scrollbar-base scrollbar-auto py-1',
-			autoHide: 'move',
-			autoHideDelay: 500,
-			autoHideSuspend: false,
+			autoHide: 'never',
 		},
 	});
+
+	// The absolutely positioned content can grow after a comment iframe loads.
+	// Observe its layout directly; iframe updates are inside a shadow root.
+	pageContentResizeObserver?.disconnect();
+	const mainGrid = document.getElementById('main-grid');
+	if (mainGrid && OverlayScrollbars.valid(pageScrollbar)) {
+		pageContentResizeObserver = new ResizeObserver(() => pageScrollbar.update(true));
+		pageContentResizeObserver.observe(mainGrid);
+	}
 
 	const katexElements = document.querySelectorAll('.katex-display') as NodeListOf<HTMLElement>;
 
