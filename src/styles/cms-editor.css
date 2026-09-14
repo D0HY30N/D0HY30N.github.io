@@ -1,3 +1,16 @@
+/* Serve CMS icons from this site even when the external font CDN is unavailable. */
+@font-face {
+  font-family: "CMS Material Symbols";
+  font-style: normal;
+  font-display: block;
+  font-weight: 100 700;
+  src: url("@fontsource-variable/material-symbols-outlined/files/material-symbols-outlined-latin-wght-normal.woff2") format("woff2");
+}
+.sui.icon.material-symbols-outlined {
+  font-family: "CMS Material Symbols";
+  font-feature-settings: "liga";
+}
+
 .cms-category-display {
   box-sizing: border-box;
   width: 100%;

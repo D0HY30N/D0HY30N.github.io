@@ -5,9 +5,6 @@ white(a)
 black(a)
   rgba(0, 0, 0, a)
 
-rainbow-light = linear-gradient(to right, oklch(0.80 0.10 0), oklch(0.80 0.10 30), oklch(0.80 0.10 60), oklch(0.80 0.10 90), oklch(0.80 0.10 120), oklch(0.80 0.10 150), oklch(0.80 0.10 180), oklch(0.80 0.10 210), oklch(0.80 0.10 240), oklch(0.80 0.10 270), oklch(0.80 0.10 300), oklch(0.80 0.10 330), oklch(0.80 0.10 360))
-rainbow-dark = linear-gradient(to right, oklch(0.70 0.10 0), oklch(0.70 0.10 30), oklch(0.70 0.10 60), oklch(0.70 0.10 90), oklch(0.70 0.10 120), oklch(0.70 0.10 150), oklch(0.70 0.10 180), oklch(0.70 0.10 210), oklch(0.70 0.10 240), oklch(0.70 0.10 270), oklch(0.70 0.10 300), oklch(0.70 0.10 330), oklch(0.70 0.10 360))
-
 :root
   --radius-large 1rem
   --content-delay 150ms
@@ -59,8 +56,6 @@ define({
   --codeblock-bg: oklch(0.17 0.0133 var(--hue)) oklch(0.17 0.0133 var(--hue))
   --codeblock-topbar-bg: oklch(0.3 0.0171 var(--hue)) oklch(0.12 0.0133 var(--hue))
 
-  --license-block-bg: black(0.03) var(--codeblock-bg)
-
   --link-underline: oklch(0.87 0.04275 var(--hue)) oklch(0.43 0.05985 var(--hue))
   --link-hover: var(--btn-plain-bg-hover)
   --link-active: oklch(0.88 0.03895 var(--hue)) oklch(0.38 0.0475 var(--hue))
@@ -78,8 +73,6 @@ define({
   --scrollbar-bg: var(--scrollbar-bg-light) var(--scrollbar-bg-dark)
   --scrollbar-bg-hover: var(--scrollbar-bg-hover-light) var(--scrollbar-bg-hover-dark)
   --scrollbar-bg-active: var(--scrollbar-bg-active-light) var(--scrollbar-bg-active-dark)
-
-  --color-selection-bar: rainbow-light rainbow-dark
 
   --display-light-icon: 1 0
   --display-dark-icon: 0 1

@@ -1,3 +1,6 @@
+---
+import cmsIconFont from "@fontsource-variable/material-symbols-outlined/files/material-symbols-outlined-latin-wght-normal.woff2?url";
+---
 <!doctype html>
 <html lang="ko">
   <head>
@@ -7,6 +10,7 @@
     <meta name="referrer" content="same-origin" />
     <title>글 관리 · D0HY30N's Blog</title>
     <link href="config.yml" type="text/yaml" rel="cms-config-url" />
+    <link rel="preload" href={cmsIconFont} as="font" type="font/woff2" crossorigin />
   </head>
   <body data-pagefind-ignore>
     <noscript>글 관리 화면을 사용하려면 JavaScript를 켜 주세요.</noscript>

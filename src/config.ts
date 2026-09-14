@@ -1,7 +1,6 @@
 import type {
 	CategoryConfig,
 	ExpressiveCodeConfig,
-	LicenseConfig,
 	NavBarConfig,
 	ProfileConfig,
 	SidebarImageConfig,
@@ -12,7 +11,7 @@ import { LinkPreset } from "./types/config";
 export const siteConfig: SiteConfig = {
 	title: "D0HY30N's Blog",
 	subtitle: "",
-	lang: "en", // Language code, e.g. 'en', 'zh_CN', 'ja', etc.
+	lang: "en", // UI language: English or Korean.
 	themeColor: {
 		hue: 260, // Muted blue-gray accent
 		fixed: true, // Hide the theme color picker for visitors
@@ -73,14 +72,6 @@ export const categoryConfig: CategoryConfig = {
 
 export const profileConfig: ProfileConfig = {
 	name: "D0HY30N",
-	bio: "",
-	links: [],
-};
-
-export const licenseConfig: LicenseConfig = {
-	enable: false,
-	name: "CC BY-NC-SA 4.0",
-	url: "https://creativecommons.org/licenses/by-nc-sa/4.0/",
 };
 
 export const expressiveCodeConfig: ExpressiveCodeConfig = {
