@@ -15,6 +15,7 @@ media_libraries:
       max_file_size: 10485760
 slug:
   encoding: unicode
+  lowercase: false
   clean_accents: true
   sanitize_replacement: '-'
 
@@ -61,12 +62,12 @@ collections:
         required: false
       - name: parentCategory
         label: 대카테고리
-        widget: string
-        required: false
+        widget: hidden
+        default: ''
       - name: category
         label: 소카테고리
         widget: string
-        required: true
+        required: false
       - name: tags
         label: 태그
         widget: list

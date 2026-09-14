@@ -4,6 +4,7 @@ import { createRequire } from "node:module";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { test, after } from "node:test";
 import { markdownEdit, markdownTableEdit, validMarkdownUrl } from "../src/scripts/cms-markdown-edit.mjs";
+import { categoriesFromPostPath, syncPostFolderCategory } from "../src/scripts/cms-post-category.mjs";
 
 const require = createRequire(import.meta.url);
 const astroRequire = createRequire(require.resolve("astro/package.json"));
@@ -17,6 +18,24 @@ await astroRequire("esbuild").build({
 });
 const { renderMarkdown } = await import(pathToFileURL(fileURLToPath(compiled)).href);
 after(() => rm(compiled, { force: true }));
+
+test("CMS folders supply both category levels while root posts keep manual categories", () => {
+	assert.deepEqual(categoriesFromPostPath("src/content/posts/보안/WEB/http.md"), { parentCategory: "보안", category: "WEB" });
+	assert.deepEqual(categoriesFromPostPath("src/content/posts/개발 도구/작성 환경/한글 제목.md"), { parentCategory: "개발 도구", category: "작성 환경" });
+	assert.deepEqual(categoriesFromPostPath("src/content/posts/보안/WEB/노트/http.md"), { parentCategory: "보안", category: "WEB" });
+	assert.deepEqual(categoriesFromPostPath("src/content/posts/http.md"), { parentCategory: "", category: undefined });
+	assert.deepEqual(categoriesFromPostPath("/src/content/posts/개발/astro.md"), { parentCategory: "개발", category: undefined });
+	for (const path of [undefined, "src/content/spec/about.md", "src/content/posts/", "src/content/posts/../about.md"]) {
+		assert.equal(categoriesFromPostPath(path), undefined);
+	}
+});
+
+test("folder synchronization leaves other CMS collections untouched", () => {
+	for (const collection of ["pages", "writing-guides"]) {
+		const entry = { get: (key) => key === "collection" ? collection : undefined };
+		assert.equal(syncPostFolderCategory({ entry }), entry);
+	}
+});
 
 test("CMS preserves directive labels, math, and Expressive Code metadata", async () => {
 	const markdown = ':::tip[확인 제목]\n내용\n:::\n\n:spoiler[비밀]\n\n$x^2$\n\n```js title="test.js" ins={1} collapse={2-3} startLineNumber=10\nconst x=1;\nconst y=2;\nconst z=3;\n```';
