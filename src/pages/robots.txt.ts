@@ -4,6 +4,8 @@ const robotsTxt = `
 User-agent: *
 Allow: /
 Disallow: /pagefind/
+Disallow: /d0hy30n$
+Disallow: /d0hy30n/
 
 Sitemap: ${new URL("sitemap-index.xml", import.meta.env.SITE).href}
 `.trim();
