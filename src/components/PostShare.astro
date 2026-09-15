@@ -8,12 +8,13 @@ interface Props {
 const { url } = Astro.props;
 ---
 
-<post-share data-url={url} data-pagefind-ignore class="block max-w-full">
+<post-share data-pagefind-ignore class="block max-w-full">
     <div class="flex justify-end">
-        <button type="button" data-copy-link disabled aria-label="게시글 URL 복사" title="URL 복사"
-            class="btn-regular h-8 w-8 rounded-md active:scale-95">
-            <span data-link-icon aria-hidden="true"><Icon name="material-symbols:link-rounded" class="text-xl" /></span>
-            <span data-success-icon aria-hidden="true" hidden><Icon name="material-symbols:check-rounded" class="text-xl" /></span>
+        <button type="button" data-copy-link disabled aria-label="게시글 공유하기: URL 복사" title="URL 복사"
+            class="share-button h-8 rounded-md active:scale-95">
+            <span data-link-icon aria-hidden="true"><Icon name="material-symbols:link-rounded" class="text-2xl -rotate-45" /></span>
+            <span data-success-icon aria-hidden="true" hidden><Icon name="material-symbols:check-rounded" class="text-2xl" /></span>
+            <span>공유하기</span>
         </button>
     </div>
     <span data-copy-status class="sr-only" role="status" aria-live="polite" aria-atomic="true"></span>
@@ -27,6 +28,21 @@ const { url } = Astro.props;
 
 <style>
     [hidden] { display: none !important; }
+    .share-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.375rem;
+        padding: 0;
+        background: transparent;
+        color: #6b7785;
+        font-size: 1rem;
+        font-weight: 500;
+        white-space: nowrap;
+        transition: color 150ms ease, transform 150ms ease;
+    }
+    :global(.dark) .share-button { color: #a5b0bd; }
+    .share-button:hover, .share-button:active { color: var(--primary); }
     button:focus-visible, input:focus-visible {
         outline: 2px solid var(--primary);
         outline-offset: 3px;
@@ -83,9 +99,10 @@ class PostShare extends HTMLElement {
             reset();
             fallback.hidden = true;
             button.disabled = true;
+            const shareUrl = window.location.href;
+            input.value = shareUrl;
             try {
-                // Share the canonical post URL, without category filters or anchors.
-                await navigator.clipboard.writeText(this.dataset.url!);
+                await navigator.clipboard.writeText(shareUrl);
                 if (controller.signal.aborted) return;
                 button.title = "복사 완료";
                 linkIcon.hidden = true;
