@@ -98,65 +98,18 @@ main .gsc-loading-image {
   background-image: url("https://github.githubassets.com/images/mona-loading-dark.gif");
 }
 
-/* D0HY30N blog: a single editor surface and comments separated by fine rules. */
+/* D0HY30N blog: unobtrusive surfaces, readable spacing, and blue-gray accents. */
 body { background: transparent; }
-main { font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif; font-size: 15px; line-height: 1.7; }
-.gsc-main, .gsc-comments { gap: 1.25rem; }
+main { font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif; font-size: 15px; line-height: 1.65; }
+.gsc-main { gap: 1.25rem; }
 .gsc-header { padding-bottom: 0.25rem; }
-.gsc-comments-count { font-size: 1.125rem; font-weight: 600; text-decoration: none; }
-.gsc-comment-box, .gsc-comment-box:not(.gsc-comment-box-is-reply) {
-  border: 0; border-radius: 0; background: transparent; box-shadow: none;
-}
-.gsc-comment-box-tabs, .gsc-comment .gsc-comment-box-tabs {
-  border: 0; border-radius: 0; background: transparent;
-}
-.gsc-comment-box-tabs > div:first-child { margin: 0 0 0.5rem; }
-.gsc-comment-box-tabs button {
-  margin: 0; padding: 0.4rem 0.65rem; border: 0; border-radius: 0; background: transparent;
-}
-.gsc-comment-box-tabs button.color-text-primary {
-  color: var(--color-fg-default); box-shadow: inset 0 -2px var(--color-accent-emphasis);
-}
-.gsc-comment-box-md-toolbar { margin-top: 0; margin-right: 0; }
-.gsc-comment-box-main { margin: 0; }
-.gsc-comment-box-write {
-  border: 1px solid var(--color-border-default); border-radius: 8px;
-  background: var(--color-canvas-inset);
-}
-.gsc-comment-box-write:focus-within {
-  border-color: var(--color-accent-fg); box-shadow: 0 0 0 2px var(--color-accent-muted);
-}
-.gsc-comment-box-textarea, .gsc-comment-box-textarea-extras {
-  border: 0; background: transparent; box-shadow: none;
-}
-.gsc-comment-box-textarea {
-  min-height: 104px; padding: 12px; border-radius: 8px; line-height: 1.75;
-}
-.gsc-comment-box-textarea-extras { padding: 4px 12px 8px; }
-.gsc-comment-box-preview {
-  min-height: 140px; padding: 12px; border: 1px solid var(--color-border-default);
-  border-radius: 8px; background: var(--color-canvas-inset);
-}
-.gsc-comment-box-bottom { margin: 12px 0 0; }
-.gsc-comment-box-buttons .btn { border-radius: 6px; box-shadow: none; }
-.gsc-timeline { gap: 0; }
-.gsc-comment { padding: 20px 0; border-bottom: 1px solid var(--color-border-muted); border-radius: 0; }
-.gsc-comment:first-child { padding-top: 0; }
-.gsc-comment:last-child { padding-bottom: 0; border-bottom: 0; }
-.gsc-comment > div { border: 0; border-radius: 0; background: transparent; box-shadow: none; }
-.gsc-comment-header { padding: 0; }
-.gsc-comment-content:not(.minimized) { padding: 12px 0; line-height: 1.8; }
-.gsc-comment-footer { margin-bottom: 0; }
-.gsc-comment-reactions { margin-left: 0; }
-.gsc-comment-replies-count { margin-right: 0; }
-.gsc-replies { margin-top: 16px; border-radius: 0; background: transparent; }
-.gsc-reply-box { padding: 12px 0 0; border-radius: 0; background: transparent; }
-.gsc-comment-box-is-reply { margin-top: 16px; }
-@media (max-width: 640px) {
-  main { font-size: 14px; }
-  .gsc-comment-box-textarea { min-height: 96px; }
-  .gsc-comment { padding-top: 16px; padding-bottom: 16px; }
-}
+.gsc-comments-count { font-size: 1.125rem; font-weight: 600; }
+.gsc-comment-box, .gsc-comment { border-radius: 12px; box-shadow: none; }
+.gsc-comment-box-textarea { min-height: 112px; border-radius: 10px; line-height: 1.75; }
+.gsc-comment-content { line-height: 1.8; }
+.gsc-comment-box-buttons button { border-radius: 8px; box-shadow: none; }
+.gsc-comment-box-tabs button { border-radius: 8px 8px 0 0; }
+@media (max-width: 640px) { main { font-size: 14px; } .gsc-comment-box-textarea { min-height: 104px; } }
 
 main {
   --color-fg-default: #e4e4e7;
@@ -190,4 +143,9 @@ main {
   --color-segmented-control-button-bg: #2c2c32;
   --color-segmented-control-button-selected-border: #4a4c57;
   color-scheme: dark;
+}
+
+/* Keep the comment count while hiding the provider label. */
+.gsc-left-header > em {
+    display: none;
 }
