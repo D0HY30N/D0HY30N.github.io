@@ -14,7 +14,7 @@ const { url } = Astro.props;
             class="share-button h-8 rounded-md active:scale-95">
             <span data-link-icon aria-hidden="true"><Icon name="material-symbols:link-rounded" class="text-2xl -rotate-45" /></span>
             <span data-success-icon aria-hidden="true" hidden><Icon name="material-symbols:check-rounded" class="text-2xl" /></span>
-            <span data-copy-label>공유하기</span>
+            <span data-copy-label class="hidden md:inline">공유하기</span>
         </button>
     </div>
     <span data-copy-status class="sr-only" role="status" aria-live="polite" aria-atomic="true"></span>
@@ -49,6 +49,12 @@ const { url } = Astro.props;
     .share-button:active {
         background: var(--btn-regular-bg-active);
         color: var(--primary);
+    }
+    @media (max-width: 767px) {
+        .share-button {
+            width: 2rem;
+            padding: 0;
+        }
     }
     button:focus-visible, input:focus-visible {
         outline: 2px solid var(--primary);
