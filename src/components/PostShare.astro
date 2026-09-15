@@ -33,16 +33,23 @@ const { url } = Astro.props;
         align-items: center;
         justify-content: center;
         gap: 0.375rem;
-        padding: 0;
-        background: transparent;
+        padding: 0 0.625rem;
+        background: var(--btn-regular-bg);
         color: #6b7785;
         font-size: 1rem;
         font-weight: 500;
         white-space: nowrap;
-        transition: color 150ms ease, transform 150ms ease;
+        transition: color 150ms ease, background-color 150ms ease, transform 150ms ease;
     }
     :global(.dark) .share-button { color: #a5b0bd; }
-    .share-button:hover, .share-button:active { color: var(--primary); }
+    .share-button:hover {
+        background: var(--btn-regular-bg-hover);
+        color: var(--primary);
+    }
+    .share-button:active {
+        background: var(--btn-regular-bg-active);
+        color: var(--primary);
+    }
     button:focus-visible, input:focus-visible {
         outline: 2px solid var(--primary);
         outline-offset: 3px;
