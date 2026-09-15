@@ -79,4 +79,9 @@ const className = Astro.props.class;
             {!(tags && tags.length > 0) && <div class="transition text-50 text-sm font-medium">{i18n(I18nKey.noTags)}</div>}
         </div>
     </div>
+    {Astro.slots.has("actions") && (
+        <div class="ml-auto shrink-0 max-w-full">
+            <slot name="actions" />
+        </div>
+    )}
 </div>

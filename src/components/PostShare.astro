@@ -1,0 +1,120 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+	url: string;
+}
+
+const { url } = Astro.props;
+---
+
+<post-share data-url={url} data-pagefind-ignore class="block max-w-full">
+    <div class="flex justify-end">
+        <button type="button" data-copy-link disabled aria-label="게시글 링크 복사" title="링크 공유"
+            class="btn-regular h-8 min-w-8 sm:min-w-[6.5rem] px-2 sm:px-3 gap-1.5 rounded-md text-sm font-medium active:scale-95">
+            <span data-link-icon aria-hidden="true"><Icon name="material-symbols:link-rounded" class="text-xl" /></span>
+            <span data-success-icon aria-hidden="true" hidden><Icon name="material-symbols:check-rounded" class="text-xl" /></span>
+            <span data-copy-label class="hidden sm:inline">링크 공유</span>
+        </button>
+    </div>
+    <span data-copy-status class="sr-only" role="status" aria-live="polite" aria-atomic="true"></span>
+    <div data-copy-fallback class="share-fallback" hidden>
+        <label class="block text-sm text-50">
+            주소를 선택해서 복사해 주세요.
+            <input data-share-url type="url" readonly value={url} aria-label="게시글 주소" />
+        </label>
+    </div>
+</post-share>
+
+<style>
+    [hidden] { display: none !important; }
+    button:focus-visible, input:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 3px;
+    }
+    .share-fallback {
+        width: min(22rem, calc(100vw - 4.5rem));
+        max-width: 100%;
+        margin-top: 0.75rem;
+    }
+    input {
+        width: 100%;
+        margin-top: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid var(--line-divider);
+        border-radius: 0.5rem;
+        background: var(--card-bg);
+        color: var(--primary);
+        font-size: 0.875rem;
+    }
+</style>
+
+<script>
+class PostShare extends HTMLElement {
+    private controller?: AbortController;
+    private resetTimer?: number;
+
+    connectedCallback() {
+        this.controller?.abort();
+        window.clearTimeout(this.resetTimer);
+        const controller = new AbortController();
+        this.controller = controller;
+
+        const button = this.querySelector<HTMLButtonElement>("[data-copy-link]")!;
+        const label = this.querySelector<HTMLElement>("[data-copy-label]")!;
+        const linkIcon = this.querySelector<HTMLElement>("[data-link-icon]")!;
+        const successIcon = this.querySelector<HTMLElement>("[data-success-icon]")!;
+        const status = this.querySelector<HTMLElement>("[data-copy-status]")!;
+        const fallback = this.querySelector<HTMLElement>("[data-copy-fallback]")!;
+        const input = this.querySelector<HTMLInputElement>("[data-share-url]")!;
+
+        const reset = () => {
+            label.textContent = "링크 공유";
+            button.title = "링크 공유";
+            linkIcon.hidden = false;
+            successIcon.hidden = true;
+            status.textContent = "";
+        };
+
+        reset();
+        fallback.hidden = true;
+        button.disabled = false;
+        input.addEventListener("focus", () => input.select(), { signal: controller.signal });
+
+        button.addEventListener("click", async () => {
+            window.clearTimeout(this.resetTimer);
+            reset();
+            fallback.hidden = true;
+            button.disabled = true;
+            try {
+                // Share the canonical post URL, without category filters or anchors.
+                await navigator.clipboard.writeText(this.dataset.url!);
+                if (controller.signal.aborted) return;
+                label.textContent = "복사 완료";
+                button.title = "복사 완료";
+                linkIcon.hidden = true;
+                successIcon.hidden = false;
+                status.textContent = "게시글 링크를 복사했어요.";
+                this.resetTimer = window.setTimeout(reset, 2200);
+            } catch {
+                if (controller.signal.aborted) return;
+                fallback.hidden = false;
+                status.textContent = "게시글 주소를 선택해서 직접 복사해 주세요.";
+                input.focus({ preventScroll: true });
+                input.select();
+            } finally {
+                if (!controller.signal.aborted) button.disabled = false;
+            }
+        }, { signal: controller.signal });
+    }
+
+    disconnectedCallback() {
+        this.controller?.abort();
+        window.clearTimeout(this.resetTimer);
+    }
+}
+
+if (!customElements.get("post-share")) {
+    customElements.define("post-share", PostShare);
+}
+</script>
