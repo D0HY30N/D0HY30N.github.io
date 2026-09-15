@@ -14,7 +14,7 @@ const { url } = Astro.props;
             class="share-button h-8 rounded-md active:scale-95">
             <span data-link-icon aria-hidden="true"><Icon name="material-symbols:link-rounded" class="text-2xl -rotate-45" /></span>
             <span data-success-icon aria-hidden="true" hidden><Icon name="material-symbols:check-rounded" class="text-2xl" /></span>
-            <span>공유하기</span>
+            <span data-copy-label>공유하기</span>
         </button>
     </div>
     <span data-copy-status class="sr-only" role="status" aria-live="polite" aria-atomic="true"></span>
@@ -83,6 +83,7 @@ class PostShare extends HTMLElement {
         this.controller = controller;
 
         const button = this.querySelector<HTMLButtonElement>("[data-copy-link]")!;
+        const label = this.querySelector<HTMLElement>("[data-copy-label]")!;
         const linkIcon = this.querySelector<HTMLElement>("[data-link-icon]")!;
         const successIcon = this.querySelector<HTMLElement>("[data-success-icon]")!;
         const status = this.querySelector<HTMLElement>("[data-copy-status]")!;
@@ -91,6 +92,8 @@ class PostShare extends HTMLElement {
 
         const reset = () => {
             button.title = "URL 복사";
+            button.setAttribute("aria-label", "게시글 공유하기: URL 복사");
+            label.textContent = "공유하기";
             linkIcon.hidden = false;
             successIcon.hidden = true;
             status.textContent = "";
@@ -111,7 +114,9 @@ class PostShare extends HTMLElement {
             try {
                 await navigator.clipboard.writeText(shareUrl);
                 if (controller.signal.aborted) return;
-                button.title = "복사 완료";
+                button.title = "복사완료";
+                button.setAttribute("aria-label", "복사완료");
+                label.textContent = "복사완료";
                 linkIcon.hidden = true;
                 successIcon.hidden = false;
                 status.textContent = "게시글 링크를 복사했어요.";
