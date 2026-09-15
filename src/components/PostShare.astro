@@ -10,11 +10,10 @@ const { url } = Astro.props;
 
 <post-share data-url={url} data-pagefind-ignore class="block max-w-full">
     <div class="flex justify-end">
-        <button type="button" data-copy-link disabled aria-label="게시글 링크 복사" title="링크 공유"
-            class="btn-regular h-8 min-w-8 sm:min-w-[6.5rem] px-2 sm:px-3 gap-1.5 rounded-md text-sm font-medium active:scale-95">
+        <button type="button" data-copy-link disabled aria-label="게시글 URL 복사" title="URL 복사"
+            class="btn-regular h-8 w-8 rounded-md active:scale-95">
             <span data-link-icon aria-hidden="true"><Icon name="material-symbols:link-rounded" class="text-xl" /></span>
             <span data-success-icon aria-hidden="true" hidden><Icon name="material-symbols:check-rounded" class="text-xl" /></span>
-            <span data-copy-label class="hidden sm:inline">링크 공유</span>
         </button>
     </div>
     <span data-copy-status class="sr-only" role="status" aria-live="polite" aria-atomic="true"></span>
@@ -61,7 +60,6 @@ class PostShare extends HTMLElement {
         this.controller = controller;
 
         const button = this.querySelector<HTMLButtonElement>("[data-copy-link]")!;
-        const label = this.querySelector<HTMLElement>("[data-copy-label]")!;
         const linkIcon = this.querySelector<HTMLElement>("[data-link-icon]")!;
         const successIcon = this.querySelector<HTMLElement>("[data-success-icon]")!;
         const status = this.querySelector<HTMLElement>("[data-copy-status]")!;
@@ -69,8 +67,7 @@ class PostShare extends HTMLElement {
         const input = this.querySelector<HTMLInputElement>("[data-share-url]")!;
 
         const reset = () => {
-            label.textContent = "링크 공유";
-            button.title = "링크 공유";
+            button.title = "URL 복사";
             linkIcon.hidden = false;
             successIcon.hidden = true;
             status.textContent = "";
@@ -90,7 +87,6 @@ class PostShare extends HTMLElement {
                 // Share the canonical post URL, without category filters or anchors.
                 await navigator.clipboard.writeText(this.dataset.url!);
                 if (controller.signal.aborted) return;
-                label.textContent = "복사 완료";
                 button.title = "복사 완료";
                 linkIcon.hidden = true;
                 successIcon.hidden = false;
