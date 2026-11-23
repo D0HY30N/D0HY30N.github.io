@@ -1,0 +1,16 @@
+---
+import Shell from "../layouts/Shell.astro";
+import PostList from "./PostList.astro";
+import { categoryUrl, listCategories, listPosts } from "../lib/posts";
+interface Props { category?: string; }
+const { category } = Astro.props;
+const posts = await listPosts();
+---
+<Shell title={category || "Posts"} section="posts">
+  <header class="page-heading"><h1>Posts<span>.</span></h1></header>
+  <nav class="filters" aria-label="글 카테고리">
+    <a href="/archive/" aria-current={!category ? "page" : undefined}>전체 <small>{posts.length}</small></a>
+    {listCategories(posts).map(([name, count]) => <a href={categoryUrl(name)} aria-current={category === name ? "page" : undefined}>{name} <small>{count}</small></a>)}
+  </nav>
+  <PostList posts={category ? posts.filter(post => post.data.category === category) : posts} />
+</Shell>

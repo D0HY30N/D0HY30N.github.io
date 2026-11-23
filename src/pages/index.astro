@@ -1,0 +1,16 @@
+---
+import Shell from "../layouts/Shell.astro";
+import PostList from "../components/PostList.astro";
+import { listPosts } from "../lib/posts";
+const posts = await listPosts();
+---
+<Shell section="home">
+  <header class="intro">
+    <h1>D0HY30N<span class="possessive">'s</span> <span class="title-end">Blog</span></h1>
+    <p>보안과 개발을 공부하며 배운 내용을 기록합니다.</p>
+  </header>
+  <section aria-labelledby="latest">
+    <div class="section-head"><h2 id="latest">최근 글</h2><a class="view-all" href="/archive/">전체보기 <span aria-hidden="true">→</span></a></div>
+    <PostList posts={posts.slice(0, 6)} />
+  </section>
+</Shell>
