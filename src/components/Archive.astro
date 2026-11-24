@@ -1,16 +1,56 @@
 ---
+import type { Page } from "astro";
 import Shell from "../layouts/Shell.astro";
 import PostList from "./PostList.astro";
-import { categoryUrl, listCategories, listPosts } from "../lib/posts";
-interface Props { category?: string; }
-const { category } = Astro.props;
+import { archivePageUrl, categoryUrl, listCategories, listPosts, type Post } from "../lib/posts";
+interface Props { page: Page<Post>; category?: string; }
+const { page, category } = Astro.props;
 const posts = await listPosts();
+const title = category || "Posts";
+
+function paginationItems(current: number, last: number): (number | "…")[] {
+  if (last <= 7) return Array.from({ length: last }, (_, i) => i + 1);
+  if (current <= 4) return [1, 2, 3, 4, 5, "…", last];
+  if (current >= last - 3) return [1, "…", last - 4, last - 3, last - 2, last - 1, last];
+  return [1, "…", current - 1, current, current + 1, "…", last];
+}
 ---
-<Shell title={category || "Posts"} section="posts">
+<Shell title={page.currentPage === 1 ? title : `${title} · ${page.currentPage}페이지`} section="posts">
   <header class="page-heading"><h1>Posts<span>.</span></h1></header>
   <nav class="filters" aria-label="글 카테고리">
     <a href="/archive/" aria-current={!category ? "page" : undefined}>전체 <small>{posts.length}</small></a>
     {listCategories(posts).map(([name, count]) => <a href={categoryUrl(name)} aria-current={category === name ? "page" : undefined}>{name} <small>{count}</small></a>)}
   </nav>
-  <PostList posts={category ? posts.filter(post => post.data.category === category) : posts} />
+  {page.lastPage > 1 && <p class="page-position">{page.currentPage} / {page.lastPage}페이지</p>}
+  <PostList posts={page.data} category={category} />
+  {page.lastPage > 1 && <nav id="pagination" class="pagination" aria-label="글 목록 페이지">
+    {page.currentPage > 1 && <a rel="prev" href={archivePageUrl(page.currentPage - 1, category)} aria-label="이전 페이지">←</a>}
+    {paginationItems(page.currentPage, page.lastPage).map(item => item === "…"
+      ? <span aria-hidden="true">…</span>
+      : <a href={archivePageUrl(item, category)} aria-label={`${item}페이지`}
+          aria-current={item === page.currentPage ? "page" : undefined}>{item}</a>
+    )}
+    {page.currentPage < page.lastPage && <a rel="next" href={archivePageUrl(page.currentPage + 1, category)} aria-label="다음 페이지">→</a>}
+  </nav>}
 </Shell>
+
+<style>
+  .page-position { margin: 0 0 .75rem; color: var(--secondary); font-size: .875rem; font-variant-numeric: tabular-nums; }
+  .pagination { display: flex; justify-content: center; flex-wrap: wrap; gap: .2rem; margin-top: 2rem; }
+  .pagination a {
+    display: grid; place-items: center; min-width: 2.25rem; min-height: 2.75rem; padding-inline: .35rem;
+    border-radius: .55rem; color: var(--secondary); font-size: .94rem; font-variant-numeric: tabular-nums;
+  }
+  .pagination a:hover, .pagination a[aria-current] { background: var(--tint); color: var(--accent); }
+  .pagination a[aria-current] { position: relative; font-weight: 700; }
+  .pagination a[aria-current]::after {
+    content: ""; position: absolute; inset-inline: 0; bottom: .25rem; margin-inline: auto;
+    width: 1.1rem; height: 2px; border-radius: 1px; background: currentColor;
+  }
+  .pagination span { align-self: center; color: var(--secondary); }
+  @media (max-width: 550px) {
+    .pagination { flex-wrap: nowrap; gap: .125rem; }
+    .pagination a { flex: 0 1 2.75rem; min-width: 1.5rem; padding-inline: .15rem; }
+    .pagination span { flex: none; }
+  }
+</style>

@@ -1,28 +1,11 @@
 ---
-import { render } from "astro:content";
-import Shell from "../../layouts/Shell.astro";
-import { categoryUrl, dateLabel, listPosts, postUrl } from "../../lib/posts";
+import PostArticle from "../../components/PostArticle.astro";
+import { listPosts, postsWithNeighbors } from "../../lib/posts";
 
 export async function getStaticPaths() {
-  const posts = await listPosts();
-  return posts.map((post, index) => ({ params: { slug: post.id }, props: { post, older: posts[index + 1], newer: posts[index - 1] } }));
+  return postsWithNeighbors(await listPosts()).map(props => ({
+    params: { slug: props.post.id }, props,
+  }));
 }
-const { post, newer, older } = Astro.props;
-const { Content, headings } = await render(post);
 ---
-<Shell title={post.data.title} description={post.data.description} section="posts">
-  <article class="reader">
-    <header class="article-head">
-      <div class="meta"><a href={categoryUrl(post.data.category)}>{post.data.category}</a><time datetime={post.data.published.toISOString()}>{dateLabel(post.data.published)}</time></div>
-      <h1>{post.data.title}</h1>
-      <p>{post.data.description}</p>
-    </header>
-    {headings.length > 0 && <details class="contents"><summary>이 글의 목차</summary><ul>{headings.filter(h => h.depth <= 3).map(h => <li><a href={"#" + h.slug}>{h.text}</a></li>)}</ul></details>}
-    <div class="prose"><Content /></div>
-    <nav class="post-nav" aria-label="글 이동">
-      <a href="/archive/">전체 글 보기</a>
-      {newer && <a href={postUrl(newer)}>다음 글 · {newer.data.title}</a>}
-      {older && <a href={postUrl(older)}>이전 글 · {older.data.title}</a>}
-    </nav>
-  </article>
-</Shell>
+<PostArticle {...Astro.props} />

@@ -1,0 +1,10 @@
+---
+import type { GetStaticPaths } from "astro";
+import Archive from "../../components/Archive.astro";
+import { listPosts, POSTS_PER_PAGE } from "../../lib/posts";
+
+export const getStaticPaths = (async ({ paginate }) =>
+  paginate(await listPosts(), { pageSize: POSTS_PER_PAGE })
+) satisfies GetStaticPaths;
+---
+<Archive page={Astro.props.page} />

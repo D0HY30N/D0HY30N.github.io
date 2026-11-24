@@ -1,0 +1,13 @@
+---
+import type { GetStaticPaths } from "astro";
+import Archive from "../../../components/Archive.astro";
+import { listPosts, postsByCategory, POSTS_PER_PAGE } from "../../../lib/posts";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const groups = postsByCategory(await listPosts());
+  return [...groups].flatMap(([category, posts]) =>
+    paginate(posts, { pageSize: POSTS_PER_PAGE, params: { category } })
+  );
+}) satisfies GetStaticPaths;
+---
+<Archive page={Astro.props.page} category={Astro.params.category} />

@@ -1,0 +1,157 @@
+---
+import { Image } from "astro:assets";
+import searchCat from "../assets/search-cat.webp";
+import { listPosts, postUrl } from "../lib/posts";
+
+const posts = await listPosts();
+---
+<dialog id="search" aria-label="글 검색">
+  <div class="search-head">
+    <span class="glass" aria-hidden="true"></span>
+    <input id="query" type="search" aria-label="글 검색어" placeholder="제목, 설명, 카테고리 검색" autocomplete="off" enterkeyhint="go" autofocus />
+    <button type="button" id="clear-query" aria-label="검색어 지우기" hidden>×</button>
+    <form method="dialog"><button aria-label="검색 닫기">닫기</button></form>
+  </div>
+  <div class="search-body">
+    <div id="search-intro">
+      <Image src={searchCat} width={96} height={96} densities={[1, 2, 3]} alt="" loading="lazy" />
+      <p>떠오르는 키워드로 글을 찾아보세요.</p>
+    </div>
+    <p id="search-status" role="status"></p>
+    <ul id="matches" hidden>
+      {posts.map(post => <li data-description={post.data.description.normalize()}>
+        <a href={postUrl(post)}>
+          <strong>{post.data.title}</strong><span>{post.data.category}</span>
+          <small class="match-excerpt" hidden></small>
+        </a>
+      </li>)}
+    </ul>
+  </div>
+  <div class="search-keys" aria-hidden="true"><span><kbd>↑ ↓</kbd> 결과 이동</span><span><kbd>Enter</kbd> 열기</span><span><kbd>Esc</kbd> 닫기</span></div>
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>("#search")!;
+  const opener = document.querySelector<HTMLButtonElement>("#search-open")!;
+  const input = dialog.querySelector<HTMLInputElement>("#query")!;
+  const clearQuery = dialog.querySelector<HTMLButtonElement>("#clear-query")!;
+  const intro = dialog.querySelector<HTMLElement>("#search-intro")!;
+  const status = dialog.querySelector<HTMLElement>("#search-status")!;
+  const list = dialog.querySelector<HTMLUListElement>("#matches")!;
+  const results = Array.from(list.querySelectorAll("li"), row => {
+    const title = row.querySelector("strong")!.textContent!.normalize();
+    const category = row.querySelector("span")!.textContent!.normalize();
+    const description = row.dataset.description!;
+    const searchText = [title, description, category].join(" ");
+    return { row, title, category, description, searchText, excerpt: row.querySelector("small")! };
+  });
+
+  function showExcerpt(excerpt: HTMLElement, description: string, match: RegExpExecArray) {
+    const prefix = description.slice(0, match.index).split(/[.!?。！？]\s+/u).pop()!;
+    const before = Array.from(prefix);
+    const context = before.length > 12 ? "…" + before.slice(-12).join("").replace(/^\S*\s+/u, "") : prefix;
+    const suffix = description.slice(match.index + match[0].length).split(/(?<=[.!?。！？])\s+/u, 1)[0];
+    const highlight = document.createElement("mark");
+    highlight.textContent = match[0];
+    excerpt.replaceChildren(context, highlight, suffix);
+  }
+
+  function filterPosts() {
+    const term = input.value.trim().normalize();
+    clearQuery.hidden = input.value.length === 0;
+    intro.hidden = Boolean(term);
+    if (!term) {
+      list.hidden = true;
+      status.textContent = "";
+      return;
+    }
+    const pattern = new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "iu");
+    let count = 0;
+    for (const { row, title, category, description, searchText, excerpt } of results) {
+      row.hidden = !pattern.test(searchText);
+      if (row.hidden) continue;
+      count++;
+      const match = pattern.exec(description);
+      excerpt.hidden = !match || pattern.test(title) || pattern.test(category);
+      if (match && !excerpt.hidden) showExcerpt(excerpt, description, match);
+    }
+    list.hidden = count === 0;
+    status.textContent = count ? `검색 결과 ${count}편` : "일치하는 글이 없어요. 다른 키워드를 입력해 보세요.";
+  }
+
+  opener.addEventListener("click", () => {
+    input.value = "";
+    filterPosts();
+    opener.focus({ preventScroll: true });
+    dialog.showModal();
+  });
+  input.addEventListener("input", filterPosts);
+  clearQuery.addEventListener("click", () => {
+    input.value = "";
+    input.focus();
+    filterPosts();
+  });
+  dialog.addEventListener("keydown", event => {
+    if (event.isComposing || event.keyCode === 229 || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+    if (event.key === "Escape") {
+      event.preventDefault();
+      dialog.close();
+      return;
+    }
+
+    const fromInput = event.target === input;
+    if (list.hidden || (!fromInput && !list.contains(document.activeElement))) return;
+    if (event.key === "Enter" && fromInput) {
+      event.preventDefault();
+      list.querySelector<HTMLAnchorElement>("li:not([hidden]) a")?.click();
+      return;
+    }
+    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+    if (fromInput && event.key === "ArrowUp") return;
+
+    const links = Array.from(list.querySelectorAll<HTMLAnchorElement>("li:not([hidden]) a"));
+    const index = links.findIndex(link => link === document.activeElement);
+    event.preventDefault();
+    if (event.key === "ArrowDown") {
+      links[Math.min(index + 1, links.length - 1)]?.focus();
+    } else {
+      (links[index - 1] ?? input).focus();
+    }
+  });
+  dialog.addEventListener("click", event => {
+    if (event.target === dialog) dialog.close();
+  });
+</script>
+
+<style>
+  dialog {
+    width: min(35rem, calc(100% - 2rem)); height: min(22rem, 76dvh); max-height: 90dvh;
+    padding: 0; overflow: hidden; color: var(--ink); background: var(--panel);
+    border: 1px solid var(--rule); border-radius: 1rem; box-shadow: 0 1rem 4rem #10172926;
+  }
+  dialog[open] { display: flex; flex-direction: column; }
+  dialog::backdrop { background: light-dark(#0f192d59, rgb(0 0 0 / 55%)); }
+  :global(html:has(#search[open])) { overflow: hidden; }
+  .search-head { display: flex; align-items: center; gap: .9rem; padding: .6rem .6rem .6rem 1.2rem; border-bottom: 1px solid var(--rule); }
+  .search-head .glass { flex: none; color: var(--accent); }
+  .search-head input { min-width: 0; flex: 1; height: 2.75rem; color: var(--ink); background: transparent; border: 0; }
+  .search-head:has(input:focus-visible) { border-color: var(--accent); }
+  .search-head input:focus-visible { outline: none; }
+  .search-head input::-webkit-search-cancel-button { -webkit-appearance: none; }
+  .search-head button { min-width: 44px; height: 44px; border: 0; border-radius: .5rem; background: transparent; color: var(--secondary); font-size: .88rem; font-weight: 600; }
+  #clear-query { flex: none; font-size: 1.25rem; font-weight: 400; }
+  .search-head button:hover { background: var(--tint); color: var(--accent); }
+  .search-body { flex: 1; min-height: 0; padding-inline: 1.2rem; overflow-y: auto; overscroll-behavior: contain; }
+  #search-intro:not([hidden]) { min-height: 100%; display: grid; place-content: center; justify-items: center; gap: .9rem; text-align: center; }
+  #search-intro p { color: var(--secondary); font-size: .95rem; }
+  #search-status:not(:empty) { padding: 1rem 0 .5rem; color: var(--secondary); font-size: .9rem; }
+  #matches { list-style: none; padding: 0 0 .75rem; }
+  #matches a { display: grid; gap: .3rem; padding: .75rem .4rem; border-radius: .4rem; overflow-wrap: anywhere; }
+  #matches a:is(:hover, :focus-visible) { background: var(--tint); color: var(--accent); }
+  #matches a span { color: var(--secondary); font-size: .85rem; }
+  .match-excerpt { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .88rem; color: var(--secondary); }
+  .match-excerpt :global(mark) { color: var(--accent); background: var(--tint); font-weight: 600; }
+  .search-keys { display: flex; gap: 1rem; padding: .65rem 1.2rem; border-top: 1px solid var(--rule); color: var(--secondary); font-size: .75rem; }
+  kbd { font: inherit; font-weight: 600; }
+  @media (pointer: coarse) { .search-keys { display: none; } }
+</style>

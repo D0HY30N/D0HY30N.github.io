@@ -1,0 +1,36 @@
+---
+import { Image } from "astro:assets";
+import defaultThumbnail from "../assets/covers/default.webp";
+import { dateLabel, postUrl, type Post } from "../lib/posts";
+
+interface Props { posts: Post[]; }
+const { posts } = Astro.props;
+---
+{posts.length ? <ul class="gallery">
+  {posts.map((post, index) => <li>
+    <a class="photo-card" href={postUrl(post)}>
+      <Image
+        class="thumbnail" src={post.data.thumbnail ?? defaultThumbnail} alt=""
+        widths={[480, 720, 960]} sizes="(max-width: 600px) 100vw, (max-width: 1008px) 50vw, 470px"
+        loading={index < 2 ? "eager" : "lazy"}
+      />
+      <div class="caption">
+        <h3>{post.data.title}</h3>
+        <p>{post.data.description}</p>
+        <div class="meta"><span>{post.data.category}</span><time datetime={post.data.published.toISOString()}>{dateLabel(post.data.published)}</time></div>
+      </div>
+    </a>
+  </li>)}
+</ul> : <p class="empty">아직 공개된 글이 없어요.</p>}
+
+<style>
+  .gallery { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 2.4vw, 1.6rem); }
+  .photo-card { height: 100%; display: flex; flex-direction: column; padding: .45rem; border: 1px solid var(--rule); border-radius: .95rem; background: var(--panel); }
+  .thumbnail { border-radius: .58rem; }
+  .caption { display: flex; flex: 1; flex-direction: column; padding: 1rem .8rem .9rem; word-break: keep-all; overflow-wrap: anywhere; }
+  .caption h3 { font-size: clamp(1.13rem, 2vw, 1.45rem); line-height: 1.4; letter-spacing: -.025em; }
+  .caption p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; margin-block: .45rem 1.05rem; font-size: 1rem; line-height: 1.55; color: var(--secondary); }
+  .caption .meta { margin-top: auto; }
+  .photo-card:hover, .photo-card:focus-visible { border-color: var(--accent); color: var(--accent); }
+  @media (max-width: 600px) { .gallery { grid-template-columns: minmax(0, 1fr); } }
+</style>

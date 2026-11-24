@@ -1,0 +1,126 @@
+---
+import { Image } from "astro:assets";
+import { render } from "astro:content";
+import defaultThumbnail from "../assets/covers/default.webp";
+import ContentsLinks from "./ContentsLinks.astro";
+import Shell from "../layouts/Shell.astro";
+import { archivePageUrl, categoryUrl, dateLabel, postUrl, type Post } from "../lib/posts";
+
+interface Props {
+  post: Post;
+  older?: Post;
+  newer?: Post;
+  category?: string;
+  listPage: number;
+}
+const { post, newer, older, category, listPage } = Astro.props;
+const { Content, headings } = await render(post);
+const contents = headings.filter(heading => heading.depth <= 3);
+---
+<Shell title={post.data.title} description={post.data.description} section="posts" canonicalPath={postUrl(post)}>
+  <article class:list={["reader", { "reader-with-contents": contents.length > 0 }]}>
+    <header class="article-head">
+      <div class="meta"><a href={categoryUrl(post.data.category)}>{post.data.category}</a><time datetime={post.data.published.toISOString()}>{dateLabel(post.data.published)}</time></div>
+      <h1>{post.data.title}</h1>
+      <p>{post.data.description}</p>
+    </header>
+    {contents.length > 0 && <>
+      <details class="contents"><summary>이 글의 목차</summary><ContentsLinks headings={contents} /></details>
+      <nav class="contents-side" aria-label="이 글의 목차">
+        <h2>이 글의 목차</h2>
+        <ContentsLinks headings={contents} />
+      </nav>
+    </>}
+    <div class="prose"><Content /></div>
+    <nav id="post-navigation" class="post-nav" aria-label="글 이동">
+      {(older || newer) && <div class="post-neighbors">
+        {[
+          { entry: older, rel: "prev", label: "이전 글" },
+          { entry: newer, rel: "next", label: "다음 글" },
+        ].map(({ entry, rel, label }) => entry && (
+          <a class="post-neighbor" rel={rel} href={postUrl(entry, category)}>
+            <Image class="thumbnail" src={entry.data.thumbnail ?? defaultThumbnail} alt=""
+              widths={[96, 192, 288]} sizes="(max-width: 550px) 4.75rem, 6rem" loading="lazy" />
+            <span class="neighbor-text">
+              <span class="neighbor-direction">
+                {rel === "prev" && <span aria-hidden="true">←</span>}
+                {label}
+                {rel === "next" && <span aria-hidden="true">→</span>}
+              </span>
+              <strong>{entry.data.title}</strong>
+            </span>
+          </a>
+        ))}
+      </div>}
+      <a class="post-archive" href={archivePageUrl(listPage, category)}>
+        {category ? `${category} 글 목록` : "전체 글 보기"}
+      </a>
+    </nav>
+  </article>
+  <div class="reading-tools">
+    <a class="reading-top" href="#top" aria-label="맨 위로" title="맨 위로" hidden><span aria-hidden="true">↑</span></a>
+  </div>
+</Shell>
+
+<script>
+  const header = document.getElementById("top")!;
+  const backToTop = document.querySelector<HTMLAnchorElement>(".reading-top")!;
+  const reader = document.querySelector<HTMLElement>("article.reader")!;
+  const mobileReader = matchMedia("(max-width: 600px), (hover: none) and (pointer: coarse)");
+  let previousScroll = window.scrollY;
+  let scrollingUp = false;
+
+  function updateBackToTop() {
+    const scroll = window.scrollY;
+    if (scroll !== previousScroll) {
+      scrollingUp = scroll < previousScroll;
+      previousScroll = scroll;
+    }
+    const headerVisible = header.getBoundingClientRect().bottom >= 0;
+    const articleEndVisible = reader.getBoundingClientRect().bottom <= window.innerHeight;
+    backToTop.hidden = headerVisible || (mobileReader.matches && !scrollingUp && !articleEndVisible);
+  }
+
+  updateBackToTop();
+  window.addEventListener("scroll", updateBackToTop, { passive: true });
+  window.addEventListener("resize", updateBackToTop);
+  mobileReader.addEventListener("change", updateBackToTop);
+  new ResizeObserver(updateBackToTop).observe(reader);
+
+  const article = document.querySelector<HTMLElement>(".reader-with-contents");
+  if (article) {
+    const headings = Array.from(article.querySelectorAll<HTMLAnchorElement>(".contents a[href]"))
+      .map(link => document.getElementById(link.getAttribute("href")!.slice(1)))
+      .filter((heading): heading is HTMLElement => heading !== null);
+    const links = article.querySelectorAll<HTMLAnchorElement>(".contents-links a");
+    let current: HTMLElement | undefined;
+
+    function updateContents() {
+      const readingLine = Math.min(window.innerHeight * .3, 220);
+      const atBottom = window.scrollY > 0 && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 1;
+      let section = headings[0];
+      for (const heading of headings) {
+        const top = heading.getBoundingClientRect().top;
+        // Short articles can reach the end of the page before the selected heading reaches the top.
+        if (heading.matches(":target") && top >= -1 && (atBottom || Math.abs(top - parseFloat(getComputedStyle(heading).scrollMarginTop)) < 2)) {
+          section = heading;
+          break;
+        }
+        if (!atBottom && top > readingLine) break;
+        section = heading;
+      }
+      if (section === current) return;
+      current = section;
+      for (const link of links) {
+        if (link.getAttribute("href") === "#" + section.id) link.setAttribute("aria-current", "location");
+        else link.removeAttribute("aria-current");
+      }
+    }
+
+    updateContents();
+    window.addEventListener("scroll", updateContents, { passive: true });
+    window.addEventListener("resize", updateContents);
+    window.addEventListener("hashchange", updateContents);
+    new ResizeObserver(updateContents).observe(article);
+  }
+</script>

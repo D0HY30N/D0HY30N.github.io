@@ -1,8 +1,0 @@
----
-import Archive from "../../components/Archive.astro";
-import { listCategories, listPosts } from "../../lib/posts";
-export async function getStaticPaths() {
-  return listCategories(await listPosts()).map(([category]) => ({ params: { category } }));
-}
----
-<Archive category={Astro.params.category} />

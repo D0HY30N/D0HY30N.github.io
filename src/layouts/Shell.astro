@@ -1,11 +1,11 @@
 ---
-import { listPosts, postUrl } from "../lib/posts";
+import ProfileLinks from "../components/ProfileLinks.astro";
+import SearchDialog from "../components/SearchDialog.astro";
 import "../styles/site.css";
-interface Props { title?: string; description?: string; section: "home" | "posts" | "about"; }
-const { title, description = "보안과 개발을 공부하며 배운 내용을 기록하는 D0HY30N의 블로그.", section } = Astro.props;
+interface Props { title?: string; description?: string; section: "home" | "posts" | "about"; canonicalPath?: string; }
+const { title, description = "보안을 공부하며 배운 내용을 기록하는 D0HY30N의 블로그.", section, canonicalPath = Astro.url.pathname } = Astro.props;
 const name = "D0HY30N's Blog";
 const pageTitle = title ? title + " · " + name : name;
-const posts = await listPosts();
 ---
 <!doctype html>
 <html lang="ko">
@@ -14,56 +14,40 @@ const posts = await listPosts();
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=d0-refined" />
+    <link rel="canonical" href={new URL(canonicalPath, Astro.site)} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <script is:inline>try { document.documentElement.dataset.theme = localStorage.getItem("theme") || ""; } catch {}</script>
   </head>
   <body>
     <a class="skip" href="#main">본문으로 이동</a>
-    <header class="site-head">
+    <header class="site-head" id="top" tabindex="-1">
       <div class="bar frame">
         <a class="brand" href="/" aria-label="D0HY30N 홈">
           <span class="brand-mark" aria-hidden="true">d0</span>
-          <span>D0HY30N</span>
+          <span class="brand-name">D0HY30N</span>
         </a>
         <nav class="nav" aria-label="주 메뉴">
+          <a href="/" aria-current={section === "home" ? "page" : undefined}>Home</a>
           <a href="/archive/" aria-current={section === "posts" ? "location" : undefined}>Posts</a>
           <a href="/about/" aria-current={section === "about" ? "page" : undefined}>About</a>
         </nav>
         <div class="tools">
-          <button id="search-open" type="button" aria-label="글 검색" aria-haspopup="dialog"><span class="glass" aria-hidden="true"></span><span class="search-label">검색</span></button>
+          <button id="search-open" type="button" aria-label="글 검색" aria-haspopup="dialog" aria-controls="search"><span class="glass" aria-hidden="true"></span><span class="search-label">검색</span></button>
           <button id="theme-switch" type="button" aria-label="다크 모드" aria-pressed="false"><span class="theme-icon" aria-hidden="true"></span></button>
         </div>
       </div>
     </header>
     <main class="frame" id="main"><slot /></main>
-    <footer class="frame site-foot"><span>© {new Date().getFullYear()} D0HY30N</span><a href="https://github.com/D0HY30N">GitHub ↗</a></footer>
-    <dialog id="search" aria-labelledby="search-title">
-      <div class="dialog-head"><h2 id="search-title">글 검색</h2><form method="dialog"><button aria-label="검색 닫기">닫기</button></form></div>
-      <input id="query" type="search" placeholder="제목, 설명, 카테고리 검색" aria-label="검색어" autofocus />
-      <ul id="matches">{posts.map(post => <li data-match={[post.data.title,post.data.description,post.data.category].join(" ").toLowerCase()}>
-        <a href={postUrl(post)}><strong>{post.data.title}</strong><span>{post.data.category}</span></a>
-      </li>)}</ul>
-      <p id="no-match" role="status" hidden={posts.length > 0}>검색 결과가 없습니다.</p>
-    </dialog>
+    <footer class="site-foot" id="footer">
+      <div class="frame foot-inner">
+        <ProfileLinks />
+        <small>© {new Date().getFullYear()} <a href="/" aria-label={name + " 홈"}>D0HY30N</a>. All rights reserved.</small>
+      </div>
+    </footer>
+    <SearchDialog />
     <script>
-      const dialog = document.querySelector<HTMLDialogElement>("#search")!;
-      const query = document.querySelector<HTMLInputElement>("#query")!;
-      const rows = [...document.querySelectorAll<HTMLElement>("#matches li")];
-      function filterPosts() {
-        const term = query.value.trim().toLowerCase();
-        rows.forEach(row => { row.hidden = !row.dataset.match?.includes(term); });
-        document.querySelector<HTMLElement>("#no-match")!.hidden = rows.some(row => !row.hidden);
-      }
-      document.querySelector("#search-open")!.addEventListener("click", () => {
-        query.value = "";
-        filterPosts();
-        dialog.showModal();
-        query.focus();
-      });
-      query.addEventListener("input", filterPosts);
       const themeSwitch = document.querySelector<HTMLButtonElement>("#theme-switch")!;
       const systemTheme = matchMedia("(prefers-color-scheme: dark)");
       const isDark = () => document.documentElement.dataset.theme

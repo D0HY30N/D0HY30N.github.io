@@ -1,9 +1,136 @@
 ---
 import Shell from "../layouts/Shell.astro";
+import ProfileEntries from "../components/ProfileEntries.astro";
+import ProfileLinks from "../components/ProfileLinks.astro";
+import { awardsAndActivities, certifications, cves, positions } from "../data/profile";
+
+const sections = [
+  { id: "experience", title: "경력", limit: 3, initiallyOpen: true, entries: [...positions].sort((a, b) => b.start.localeCompare(a.start)) },
+  { id: "awards", title: "수상 · 활동", limit: 4, entries: [...awardsAndActivities].sort((a, b) => b.date.localeCompare(a.date)) },
+  { id: "cves", title: "CVE", limit: 6, entries: cves },
+  { id: "certifications", title: "자격증", limit: 4, initiallyOpen: true, entries: certifications },
+];
 ---
-<Shell title="About" section="about">
-  <div class="reader">
-    <header class="page-heading"><h1>About<span>.</span></h1></header>
-    <div class="prose"><h2>D0HY30N</h2><p>보안과 개발을 공부하며 배운 내용을 기록합니다.</p><a href="https://github.com/D0HY30N">GitHub 프로필 ↗</a></div>
+<Shell title="About" section="about" description="D0HY30N의 모의해킹 활동과 수상, CVE, 경력 및 자격증.">
+  <header class="page-heading profile">
+    <h1>About<span>.</span></h1>
+    <div class="introduction">
+      <div class="identity-row">
+        <h2>김도현 <span class="handle">/ D0HY30N</span></h2>
+        <ProfileLinks besideName />
+      </div>
+      <p class="motto" lang="en"><span>“The gratification comes in the doing,</span> <span>not in the results.”</span></p>
+    </div>
+    <span class="imprint" aria-hidden="true"></span>
+  </header>
+
+  <div class="portfolio">
+    {sections.map(({ id, title, entries, limit, initiallyOpen }) => <section id={id} aria-labelledby={id + "-title"}>
+      <details class="section-disclosure" open={initiallyOpen}>
+        <summary>
+          <h2 id={id + "-title"}>
+            <span>{title}</span>
+            {(id === "awards" || id === "cves") && <span class="section-count">{entries.length}건</span>}
+          </h2>
+        </summary>
+        <ProfileEntries entries={entries.slice(0, limit)} />
+        {entries.length > limit && <details class="more">
+          <summary>
+            <span class="show-more">{title} {entries.length - limit}건 더 보기</span>
+            <span class="show-less">{title} 접기</span>
+          </summary>
+          <ProfileEntries entries={entries.slice(limit)} />
+        </details>}
+      </details>
+    </section>)}
   </div>
 </Shell>
+
+<style>
+  /*! Spectral by The Spectral Project Authors. SIL OFL 1.1: /fonts/Spectral-OFL.txt */
+  @font-face {
+    font-family: "Spectral";
+    src: url("../assets/fonts/spectral-latin-500-italic.woff2") format("woff2");
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+  }
+  .profile {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "title mark" "intro mark"; align-items: center;
+    gap: clamp(.875rem, 1.5vw, 1.125rem) 2rem;
+    margin-bottom: clamp(2.5rem, 5vw, 3rem);
+  }
+  .profile h1 { grid-area: title; }
+  .introduction { grid-area: intro; container: profile-intro / inline-size; }
+  .identity-row {
+    display: flex; flex-wrap: wrap; align-items: baseline;
+    gap: 0 clamp(.75rem, 1.5vw, 1.5rem);
+  }
+  .introduction h2 { font-size: clamp(2.25rem, 4vw, 3rem); line-height: 1.18; letter-spacing: -.045em; }
+  .handle {
+    color: light-dark(#647287, #96a2b8); font-size: clamp(1.05rem, 1.7vw, 1.3rem);
+    font-weight: 400; letter-spacing: -.025em; white-space: nowrap;
+  }
+  .motto {
+    margin-top: .6rem; color: color-mix(in srgb, var(--ink) 92%, var(--paper));
+    font-family: "Spectral", Georgia, serif;
+    font-size: calc(clamp(1.125rem, 1rem + .5vw, 1.375rem) - 1pt);
+    font-weight: 500; font-style: italic; line-height: 1.45;
+  }
+  .motto span { display: inline-block; max-width: 100%; }
+  .imprint {
+    grid-area: mark; position: relative; width: clamp(6.5rem, 12vw, 9rem); aspect-ratio: 1;
+    justify-self: end; margin-inline-end: clamp(0rem, 4vw, 3.5rem);
+  }
+  .imprint::before {
+    content: ""; position: absolute; inset: 0; border-radius: 50%; transform: rotate(-24deg);
+    background: repeating-radial-gradient(ellipse 66% 94% at 28% 62%,
+      transparent 0 5px, var(--accent) 5.5px 6.75px, transparent 7.25px 9px);
+  }
+  .imprint::after {
+    content: ""; position: absolute; inset: auto 3% 9% auto; width: 10%; aspect-ratio: 1;
+    border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 .28rem var(--paper);
+  }
+  .portfolio {
+    --record-rail: clamp(10rem, 18vw, 11rem);
+    --record-gap: clamp(.85rem, 2vw, 1.5rem);
+    border-bottom: 1px solid var(--rule);
+  }
+  .portfolio section { min-width: 0; word-break: keep-all; overflow-wrap: anywhere; scroll-margin-top: 1rem; }
+  .section-disclosure { border-top: 1px solid var(--rule); }
+  .section-disclosure[open] { padding-bottom: 1rem; }
+  .section-disclosure > summary { display: block; padding-block: 1rem; cursor: pointer; }
+  .section-disclosure[open] > summary { padding-block-end: .625rem; }
+  .section-disclosure > summary::-webkit-details-marker { display: none; }
+  .section-disclosure > summary:is(:hover, :focus-visible) { color: var(--accent); }
+  .section-disclosure h2 {
+    display: flex; align-items: baseline; gap: .65rem;
+    font-size: clamp(1.35rem, 2vw, 1.65rem); line-height: 1.35; letter-spacing: -.025em;
+  }
+  .section-count {
+    color: var(--secondary); font-size: .86rem; font-weight: 400;
+    letter-spacing: 0; font-variant-numeric: tabular-nums;
+  }
+  .section-disclosure h2::after {
+    content: ""; width: .5rem; height: .5rem; align-self: center; margin-inline: auto .35rem;
+    border-right: 1.5px solid; border-bottom: 1.5px solid;
+    color: var(--secondary); transform: rotate(45deg);
+  }
+  .section-disclosure[open] h2::after { transform: rotate(225deg); }
+  .more { border-top: 1px solid var(--rule); }
+  .more summary { width: fit-content; padding-block: .8rem; min-height: 44px; cursor: pointer; color: var(--secondary); font-size: .89rem; }
+  .more summary:is(:hover, :focus-visible) { color: var(--accent); }
+  .show-less, .more[open] .show-more { display: none; }
+  .more[open] .show-less { display: inline; }
+  #awards .more[open] { display: flex; flex-direction: column; }
+  #awards .more[open] summary { order: 1; }
+  @media (max-width: 40rem) {
+    .profile { grid-template-areas: "title mark" "intro intro"; column-gap: 1rem; }
+    .imprint { width: clamp(3rem, 13vw, 4.5rem); margin: 0; }
+    .imprint::before {
+      background: repeating-radial-gradient(ellipse 66% 94% at 28% 62%,
+        transparent 0 3px, var(--accent) 3.4px 4.1px, transparent 4.6px 6px);
+    }
+  }
+</style>

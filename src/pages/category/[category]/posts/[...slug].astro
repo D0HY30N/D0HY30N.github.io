@@ -1,0 +1,14 @@
+---
+import PostArticle from "../../../../components/PostArticle.astro";
+import { listPosts, postsByCategory, postsWithNeighbors } from "../../../../lib/posts";
+
+export async function getStaticPaths() {
+  const groups = postsByCategory(await listPosts());
+  return [...groups].flatMap(([category, posts]) =>
+    postsWithNeighbors(posts).map(props => ({
+      params: { category, slug: props.post.id }, props: { ...props, category },
+    }))
+  );
+}
+---
+<PostArticle {...Astro.props} />

@@ -1,17 +1,21 @@
 ---
+import { Image } from "astro:assets";
+import defaultThumbnail from "../assets/covers/default.webp";
 import { dateLabel, postUrl, type Post } from "../lib/posts";
-interface Props { posts: Post[]; }
-const { posts } = Astro.props;
+interface Props { posts: Post[]; category?: string; }
+const { posts, category } = Astro.props;
 ---
 {posts.length ? <ul class="post-list">
-  {posts.map(post => <li>
-    <a class="post-row" href={postUrl(post)}>
-      <div>
+  {posts.map((post, index) => <li>
+    <a class="post-row" href={postUrl(post, category)}>
+      <Image class="thumbnail" src={post.data.thumbnail ?? defaultThumbnail} alt=""
+        widths={[240, 320, 480, 720, 960]} sizes="(max-width: 550px) calc(100vw - 2.25rem - 2px), min(19rem, calc(40vw - 1.2rem))"
+        loading={index < 2 ? "eager" : "lazy"} />
+      <div class="post-summary">
         <h2>{post.data.title}</h2>
         <p>{post.data.description}</p>
         <div class="meta"><span>{post.data.category}</span><time datetime={post.data.published.toISOString()}>{dateLabel(post.data.published)}</time></div>
       </div>
-      <span class="row-arrow" aria-hidden="true">↗</span>
     </a>
   </li>)}
 </ul> : <p class="empty">아직 공개된 글이 없어요.</p>}
