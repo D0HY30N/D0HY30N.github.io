@@ -7,6 +7,7 @@ interface Props { page: Page<Post>; category?: string; }
 const { page, category } = Astro.props;
 const posts = await listPosts();
 const title = category || "Posts";
+const description = category ? `D0HY30N의 ${category} 글 모음.` : "모의해킹과 사이버보안에 관한 D0HY30N의 글 모음.";
 
 function paginationItems(current: number, last: number): (number | "…")[] {
   if (last <= 7) return Array.from({ length: last }, (_, i) => i + 1);
@@ -15,7 +16,7 @@ function paginationItems(current: number, last: number): (number | "…")[] {
   return [1, "…", current - 1, current, current + 1, "…", last];
 }
 ---
-<Shell title={page.currentPage === 1 ? title : `${title} · ${page.currentPage}페이지`} section="posts">
+<Shell title={page.currentPage === 1 ? title : `${title} · ${page.currentPage}페이지`} section="posts" description={description}>
   <header class="page-heading"><h1>Posts<span>.</span></h1></header>
   <nav class="filters" aria-label="글 카테고리">
     <a href="/archive/" aria-current={!category ? "page" : undefined}>전체 <small>{posts.length}</small></a>

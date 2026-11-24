@@ -3,7 +3,7 @@ import ProfileLinks from "../components/ProfileLinks.astro";
 import SearchDialog from "../components/SearchDialog.astro";
 import "../styles/site.css";
 interface Props { title?: string; description?: string; section: "home" | "posts" | "about"; canonicalPath?: string; }
-const { title, description = "보안을 공부하며 배운 내용을 기록하는 D0HY30N의 블로그.", section, canonicalPath = Astro.url.pathname } = Astro.props;
+const { title, description = "김도현(D0HY30N)이 모의해킹과 사이버보안을 공부하며 남긴 기록.", section, canonicalPath = Astro.url.pathname } = Astro.props;
 const name = "D0HY30N's Blog";
 const pageTitle = title ? title + " · " + name : name;
 ---
