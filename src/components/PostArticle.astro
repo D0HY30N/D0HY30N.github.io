@@ -17,7 +17,7 @@ const { post, newer, older, category, listPage } = Astro.props;
 const { Content, headings } = await render(post);
 const contents = headings.filter(heading => heading.depth <= 3);
 ---
-<Shell title={post.data.title} description={post.data.description} section="posts" canonicalPath={postUrl(post)}>
+<Shell title={post.data.title} description={post.data.description} section="posts" canonicalPath={postUrl(post)} image={post.data.thumbnail} type="article">
   <article class:list={["reader", { "reader-with-contents": contents.length > 0 }]}>
     <header class="article-head">
       <div class="meta"><a href={categoryUrl(post.data.category)}>{post.data.category}</a><time datetime={post.data.published.toISOString()}>{dateLabel(post.data.published)}</time></div>
