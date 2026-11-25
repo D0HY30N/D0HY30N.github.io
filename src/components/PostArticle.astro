@@ -15,7 +15,8 @@ interface Props {
 }
 const { post, newer, older, category, listPage } = Astro.props;
 const { Content, headings } = await render(post);
-const contents = headings.filter(heading => heading.depth <= 3);
+// The footnotes heading is a hidden label, not a section of the post.
+const contents = headings.filter(heading => heading.depth <= 3 && heading.slug !== "footnote-label");
 ---
 <Shell title={post.data.title} description={post.data.description} section="posts" canonicalPath={postUrl(post)} image={post.data.thumbnail} type="article">
   <article class:list={["reader", { "reader-with-contents": contents.length > 0 }]}>
