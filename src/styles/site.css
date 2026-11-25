@@ -177,6 +177,11 @@ main:has(> article.reader) { --reader-width: var(--frame-width); }
   background: light-dark(#e8ebfc, #2d3655); color: var(--accent);
   padding: .12em .32em; border-radius: .25rem; font-size: .88em;
 }
+/* Wider screens: 18px body; code blocks follow so inline code never outgrows them. */
+@media (min-width: 601px) {
+  .prose { font-size: 1.125rem; line-height: 1.85; }
+  .prose pre { font-size: .9375rem; }
+}
 .post-nav {
   display: grid; gap: .65rem; margin-top: clamp(2.5rem, 6vw, 4rem);
   border-top: 1px solid var(--rule); padding-top: 1.5rem;
