@@ -10,8 +10,8 @@ const sections = [
   { id: "experience", title: "경력", entries: [...positions].sort((a, b) => b.start.localeCompare(a.start)) },
   { id: "awards", title: "수상", count: true, entries: byDateDesc.filter(entry => entry.prize) },
   { id: "cves", title: "CVE", count: true, entries: [...cves].sort((a, b) => b.published.localeCompare(a.published)) },
-  { id: "activities", title: "활동", entries: byDateDesc.filter(entry => !entry.prize) },
   { id: "certifications", title: "자격증", entries: certifications },
+  { id: "activities", title: "활동", entries: byDateDesc.filter(entry => !entry.prize) },
 ].filter(section => section.entries.length > 0);
 ---
 <Shell title="About" section="about" description="김도현(D0HY30N)의 CVE, 수상, 활동, 경력과 자격증.">
