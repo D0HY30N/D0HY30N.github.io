@@ -46,7 +46,7 @@ export const awardsAndActivities: AwardOrActivity[] = [
     organization: "과학기술정보통신부",
   },
   {
-    name: "제1회 경상북도 정보보안 창업 아이디어톤",
+    name: "경상북도 정보보안 창업 아이디어톤",
     prize: "최우수상",
     date: "2023-12-19",
     organization: "포항테크노파크",
