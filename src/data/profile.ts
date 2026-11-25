@@ -8,11 +8,19 @@ interface AwardOrActivity {
 
 interface Cve {
   id: `CVE-${number}-${number}`;
+  /** Date the CVE record was published (cve.org "Published"), YYYY-MM-DD. */
+  published: string;
   product?: string;
+  /** Vulnerability class shown under the product, e.g. "인증 우회". */
+  type?: string;
+  /** CVSS base score as published on the CVE record (3.1 or 4.0), e.g. 9.8. */
+  cvss?: number;
 }
 
 interface Position {
   name: string;
+  /** Job title or team shown under the company name, e.g. "보안 컨설턴트 · 모의해킹팀". */
+  role?: string;
   start: string;
   end?: string;
 }
@@ -52,14 +60,17 @@ export const awardsAndActivities: AwardOrActivity[] = [
 ];
 
 export const cves: Cve[] = [
-  { id: "CVE-2026-62440", product: "Apache CloudStack" },
-  { id: "CVE-2026-68979", product: "Apache NiFi" },
-  { id: "CVE-2026-88809", product: "SUSE Rancher" },
+  // CVSS 3.1 from the CISA ADP entry; the CNA rated it "important" without a score.
+  { id: "CVE-2026-62440", published: "2026-08-21", product: "Apache CloudStack", type: "접근 제어 우회", cvss: 9.1 },
+  // CVSS 4.0 from the CNA.
+  { id: "CVE-2026-68979", published: "2026-08-03", product: "Apache NiFi", type: "권한 검사 누락", cvss: 5.9 },
+  // CVSS 3.1 from the CNA.
+  { id: "CVE-2026-88809", published: "2026-11-02", product: "SUSE Rancher", type: "SSRF", cvss: 7.6 },
 ];
 
 export const positions: Position[] = [
-  { name: "수산아이앤티", start: "2026-09-07" },
-  { name: "에스에스알", start: "2024-07-22", end: "2026-08-24" },
+  { name: "수산아이앤티", role: "모의해킹 컨설턴트", start: "2026-09-07" },
+  { name: "에스에스알", role: "모의해킹 컨설턴트", start: "2024-07-22", end: "2026-08-24" },
 ];
 
 export const certifications: Certification[] = [

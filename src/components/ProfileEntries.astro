@@ -3,42 +3,53 @@ import type { ProfileEntry } from "../data/profile";
 interface Props { entries: ProfileEntry[]; }
 const { entries } = Astro.props;
 const dateLabel = (iso: string) => iso.slice(0, 7).replace("-", ".");
+// Qualitative bands are the same in CVSS 3.1 and 4.0, so mixed versions still read consistently.
+const severity = (score: number) => score >= 9 ? "Critical" : score >= 7 ? "High" : score >= 4 ? "Medium" : "Low";
 ---
 <ul class="entries">
   {entries.map(entry => <li>
     {"date" in entry ? (
-      <div class="record award">
-        <div class="award-heading">
-          <strong>{entry.name}</strong>
-          <span class:list={["prize", { participation: !entry.prize }]}>{entry.prize ?? "참여"}</span>
-        </div>
-        <div class="award-meta">
-          <span class="award-date">
-            <time datetime={entry.date}>{dateLabel(entry.date)}</time>
-            {entry.endDate && <> – <time datetime={entry.endDate}>{dateLabel(entry.endDate)}</time></>}
-          </span>
-          {entry.organization && <span class="organization">{entry.organization}</span>}
+      <div class="record">
+        <span class="when">
+          <time datetime={entry.date}>{dateLabel(entry.date)}</time>
+          {entry.endDate && <> – <time datetime={entry.endDate}>{dateLabel(entry.endDate)}</time></>}
+        </span>
+        <div class="what">
+          <strong>{entry.name}{entry.prize && <span class="prize">{entry.prize}</span>}</strong>
+          {entry.organization && <span class="detail">{entry.organization}</span>}
         </div>
       </div>
     ) : "id" in entry ? (
-      <a class="cve-link" href={"https://www.cve.org/CVERecord?id=" + entry.id}>
-        <span class="cve-id">{entry.id}</span>
-        {entry.product && <span class="product">{entry.product}</span>}
+      <a class="record cve-link" href={"https://www.cve.org/CVERecord?id=" + entry.id}>
+        <span class="when cve-id">{entry.id}</span>
+        <span class="what">
+          <strong>{entry.product ?? entry.id}</strong>
+          <span class="detail">
+            {entry.type && <>{entry.type} · </>}
+            {entry.cvss !== undefined && <><span class:list={["severity", severity(entry.cvss).toLowerCase()]}>{severity(entry.cvss)} {entry.cvss.toFixed(1)}</span> · </>}
+            <time datetime={entry.published}>{dateLabel(entry.published)}</time>
+          </span>
+        </span>
         <span class="link-arrow" aria-hidden="true">↗</span>
       </a>
     ) : "start" in entry ? (
-      <div class="record position">
-        <strong>{entry.name}</strong>
-        <div class="period">
-          <time datetime={entry.start}>{dateLabel(entry.start)}</time>
-          <span> – </span>
-          {entry.end ? <time datetime={entry.end}>{dateLabel(entry.end)}</time> : <span class="current">재직 중</span>}
+      <div class="record">
+        <span class="when">
+          <time datetime={entry.start}>{dateLabel(entry.start)}</time> – {entry.end
+            ? <time datetime={entry.end}>{dateLabel(entry.end)}</time>
+            : <span class="current">재직 중</span>}
+        </span>
+        <div class="what">
+          <strong>{entry.name}</strong>
+          {entry.role && <span class="detail">{entry.role}</span>}
         </div>
       </div>
     ) : (
-      <div class="record qualification">
-        {entry.acquired && <time class="period" datetime={entry.acquired}>{dateLabel(entry.acquired)}</time>}
-        <strong>{entry.name}</strong>
+      <div class="record">
+        <span class="when">{entry.acquired && <time datetime={entry.acquired}>{dateLabel(entry.acquired)}</time>}</span>
+        <div class="what">
+          <strong>{entry.name}</strong>
+        </div>
       </div>
     )}
   </li>)}
@@ -47,55 +58,41 @@ const dateLabel = (iso: string) => iso.slice(0, 7).replace("-", ".");
 <style>
   .entries { padding: 0; list-style: none; }
   li + li { border-top: 1px solid color-mix(in srgb, var(--rule) 65%, transparent); }
-  strong, .product { font-size: clamp(1.02rem, 1.6vw, 1.13rem); line-height: 1.5; font-weight: 600; letter-spacing: -.02em; }
-  .record, .cve-link {
+  .record {
     display: grid; grid-template-columns: var(--record-rail) minmax(0, 1fr);
     align-items: baseline; column-gap: var(--record-gap); padding-block: 1.1rem;
   }
-  .award-date, .period, .organization { color: var(--secondary); font-size: .86rem; line-height: 1.65; }
-  time { font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .award-meta { display: contents; }
-  .award-date { grid-column: 1; grid-row: 1; }
-  .award-heading {
-    grid-column: 2; grid-row: 1; display: grid; grid-template-columns: minmax(0, 1fr) auto;
-    align-items: baseline; column-gap: var(--record-gap);
-  }
-  .award-heading strong { letter-spacing: -.01em; }
+  .when, .detail { color: var(--secondary); font-size: .86rem; line-height: 1.65; }
+  .when { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .what { display: grid; gap: .2rem; min-width: 0; }
+  strong { font-size: clamp(1.02rem, 1.6vw, 1.13rem); line-height: 1.5; font-weight: 600; letter-spacing: -.015em; }
   .prize {
-    display: inline-block; padding: .05rem .45rem; border-radius: .3rem;
-    background: var(--tint); color: var(--accent); font-size: .79rem; line-height: 1.6;
-    font-weight: 650; white-space: nowrap;
+    display: inline-block; margin-inline-start: .5rem; padding: .05rem .45rem; border-radius: .3rem;
+    background: var(--tint); color: var(--accent); font-size: .74rem; line-height: 1.6;
+    font-weight: 650; letter-spacing: 0; vertical-align: .12em; white-space: nowrap;
   }
-  .organization { grid-column: 2; margin-top: .2rem; }
-  .participation { background: color-mix(in srgb, var(--secondary) 12%, var(--paper)); color: var(--secondary); }
-  .current { white-space: nowrap; }
-  .cve-link {
-    grid-template-columns: var(--record-rail) minmax(0, 1fr) auto;
-    min-height: 3.45rem; padding-block: .9rem; border-radius: .3rem;
-  }
+  .current { color: var(--accent); font-weight: 600; }
+  .cve-link { grid-template-columns: var(--record-rail) minmax(0, 1fr) auto; border-radius: .3rem; }
   .cve-id { color: var(--accent); font: 550 .92rem/1.5 var(--font-mono); }
-  .link-arrow { grid-column: -2; color: var(--secondary); line-height: 1; }
-  .cve-link:is(:hover, :focus-visible) {
-    background: color-mix(in srgb, var(--tint) 65%, transparent); color: var(--ink);
-  }
+  /* Only the severity words carry color; the rest of the line stays quiet. */
+  .severity { font-weight: 600; }
+  .critical { color: light-dark(#c4302b, #ff8f87); }
+  .high { color: light-dark(#bf4e0a, #ffad6b); }
+  .medium { color: light-dark(#94650a, #f2c94c); }
+  .low { color: var(--secondary); }
+  .link-arrow { align-self: center; color: var(--secondary); line-height: 1; }
+  .cve-link:is(:hover, :focus-visible) { background: color-mix(in srgb, var(--tint) 65%, transparent); }
   .cve-link:is(:hover, :focus-visible) .cve-id { text-decoration: underline; text-underline-offset: .22em; }
-  .qualification strong:only-child { grid-column: 1 / -1; }
-
-  @media (width > 40rem) {
-    .position .period { grid-row: 1; grid-column: 1; }
-  }
 
   @media (max-width: 40rem) {
-    .record { grid-template-columns: minmax(0, 1fr); gap: .25rem; padding-block: .9rem; }
-    .award-heading { grid-column: 1; column-gap: .6rem; }
-    .award-heading strong { text-wrap: balance; }
-    .award-meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: .15rem .45rem; }
-    .organization { margin-top: 0; }
-    .organization::before { content: "·"; margin-inline-end: .45rem; }
-    .qualification strong { grid-row: 1; }
-    .cve-link { grid-template-columns: minmax(0, 1fr) auto; row-gap: .15rem; }
-    .product { grid-column: 1; grid-row: 2; font-size: .95rem; }
-    .link-arrow { grid-row: 1 / 3; align-self: center; }
-    .cve-id { font-size: .9rem; }
+    /* Phones: one column, title first and the date last (CVE rows lead with the ID). */
+    .record { grid-template-columns: minmax(0, 1fr); row-gap: .2rem; padding-block: .9rem; }
+    .when { grid-row: 2; }
+    .what { grid-row: 1; }
+    .cve-link { grid-template-columns: minmax(0, 1fr) auto; }
+    /* The ID is the CVE's name, so it stays on top on phones. */
+    .cve-link .when { grid-row: 1; }
+    .cve-link .what { grid-row: 2; }
+    .link-arrow { grid-column: 2; grid-row: 1 / 3; }
   }
 </style>
