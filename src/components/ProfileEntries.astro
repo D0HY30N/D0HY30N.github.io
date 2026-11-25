@@ -73,7 +73,7 @@ const dateLabel = (iso: string) => iso.slice(0, 7).replace("-", ".");
     grid-template-columns: var(--record-rail) minmax(0, 1fr) auto;
     min-height: 3.45rem; padding-block: .9rem; border-radius: .3rem;
   }
-  .cve-id { color: var(--accent); font: 550 .92rem/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .cve-id { color: var(--accent); font: 550 .92rem/1.5 var(--font-mono); }
   .link-arrow { grid-column: -2; color: var(--secondary); line-height: 1; }
   .cve-link:is(:hover, :focus-visible) {
     background: color-mix(in srgb, var(--tint) 65%, transparent); color: var(--ink);

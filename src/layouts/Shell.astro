@@ -4,6 +4,9 @@ import { getImage } from "astro:assets";
 import defaultCover from "../assets/covers/default.webp";
 import ProfileLinks from "../components/ProfileLinks.astro";
 import SearchDialog from "../components/SearchDialog.astro";
+// Pretendard is split into ~90 unicode-range subsets, so a page only downloads the glyphs it uses.
+import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
+import "@fontsource-variable/jetbrains-mono/index.css";
 import "../styles/site.css";
 interface Props { title?: string; description?: string; section?: "home" | "posts" | "about"; canonicalPath?: string; image?: ImageMetadata; type?: "website" | "article"; }
 const { title, description = "김도현(D0HY30N)이 모의해킹과 사이버보안을 공부하며 남긴 기록.", section, canonicalPath = Astro.url.pathname, image = defaultCover, type = "website" } = Astro.props;

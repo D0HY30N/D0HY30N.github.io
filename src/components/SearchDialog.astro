@@ -126,6 +126,8 @@ const posts = await listPosts();
 <style>
   dialog {
     width: min(35rem, calc(100% - 2rem)); height: min(22rem, 76dvh); max-height: 90dvh;
+    /* Anchor near the top, like command palettes, so the box stays put while results change. */
+    margin: clamp(1rem, 12dvh, 7.5rem) auto auto;
     padding: 0; overflow: hidden; color: var(--ink); background: var(--panel);
     border: 1px solid var(--rule); border-radius: 1rem; box-shadow: 0 1rem 4rem #10172926;
   }

@@ -8,7 +8,8 @@
   --accent: light-dark(#4254cb, #aeb8ff);
   --tint: light-dark(#f0f2ff, #272f4c);
   --rule: light-dark(#dbe1ed, #374052);
-  font-family: Inter, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, "Pretendard Variable", monospace;
+  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", sans-serif;
   color: var(--ink); background: var(--paper);
   -webkit-font-smoothing: antialiased;
 }
@@ -170,10 +171,11 @@ main:has(> article.reader) { --reader-width: var(--frame-width); }
 }
 .prose :is(th, td) { padding: .55rem .9rem; border: 1px solid var(--rule); text-align: start; vertical-align: top; }
 .prose th { background: var(--tint); font-weight: 650; }
-.prose pre { overflow-x: auto; padding: 1.15rem; font-size: .91rem; border-radius: .55rem; }
+.prose :is(pre, code, kbd, samp) { font-family: var(--font-mono); font-variant-ligatures: none; }
+.prose pre { overflow-x: auto; padding: 1.15rem; font-size: .875rem; line-height: 1.7; border-radius: .55rem; }
 .prose :not(pre) > code {
   background: light-dark(#e8ebfc, #2d3655); color: var(--accent);
-  padding: .1em .28em; border-radius: .2rem;
+  padding: .12em .32em; border-radius: .25rem; font-size: .88em;
 }
 .post-nav {
   display: grid; gap: .65rem; margin-top: clamp(2.5rem, 6vw, 4rem);
